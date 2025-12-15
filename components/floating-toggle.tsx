@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ImageUp, SquareDashedMousePointer, X, Maximize2, FolderOpen, Monitor } from "lucide-react"
+import { ImageUp, SquareDashedMousePointer, X, Maximize2, FolderOpen, Monitor, MousePointerClick } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 import { SidebarProvider } from "./ui/sidebar"
 import { AppSidebar } from "./app-sidebar"
@@ -32,8 +32,9 @@ export function FloatingToggle() {
     const quickActions = [
         { icon: SquareDashedMousePointer, label: "Capture Area", onClick: () => startCapture() },
         { icon: ImageUp, label: "Upload Image", onClick: () => console.log("Upload image clicked") },
+        { icon: MousePointerClick, label: "Select", onClick: () => console.log("Select") },
         { icon: FolderOpen, label: "From Captures", onClick: () => console.log("Use existing") },
-        { icon: Monitor, label: "Full Page", onClick: () => console.log("Entire viewport") },
+
     ]
     const handleCapture = async (imageData: string) => {
         startProcessing() // show spinner
@@ -90,7 +91,7 @@ export function FloatingToggle() {
                 </div>
 
                 {/* FLOATING TOGGLE BUTTON + QUICK ACTIONS */}
-                <div className="fixed bottom-6 right-3 flex flex-col items-center gap-3">
+                <div className={`fixed bottom-6 right-3 flex flex-col items-center gap-3 transition-all duration-300`}>
                     <div
                         className={`flex flex-col gap-2 transition-all duration-300 ${isHovered && !sidebarOpen
                             ? "opacity-100 translate-y-0"
@@ -127,13 +128,19 @@ export function FloatingToggle() {
                                 onMouseLeave={() => setButtonHovered(false)}
                                 className="h-8 w-8 rounded-lg shadow-lg transition-transform hover:scale-110 bg-purple-500 hover:bg-purple-600"
                             >
-                                {sidebarOpen ? (
-                                    <X className="h-5 w-5" />
-                                ) : buttonHovered ? (
-                                    <Maximize2 className="h-5 w-5" />
-                                ) : (
-                                    <span className="text-lg">S</span>
-                                )}
+                                {sidebarOpen
+
+                                    ? (
+                                        <X className="h-5 w-5" />
+                                    )
+
+                                    : buttonHovered ? (
+                                        <Maximize2 className="h-5 w-5" />
+                                    )
+
+                                        : (
+                                            <span className="text-lg">S</span>
+                                        )}
                                 <span className="sr-only">Toolbar</span>
                             </Button>
                         </TooltipTrigger>

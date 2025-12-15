@@ -6,21 +6,25 @@ import {
   FileImage,
   Settings2,
   Sparkles,
+  PanelLeftClose,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavReports } from "@/components/nav-reports"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 import { NewCaptureButton } from "./capture-tool/new-capture-button"
+import { CompanyLogo } from "./company-logo"
+import { Button } from "./ui/button"
+import { ThemeToggle } from "./theme-toggle"
 
 // ----------------------------
 // SAMPLE NAV DATA
@@ -64,13 +68,25 @@ const data = {
 // COMPONENT
 // ----------------------------
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
+  // const { state, toggleSidebar } = useSidebar()
+  // const isCollapsed = state === "collapsed"
 
   return (
     <Sidebar collapsible="icon" {...props}>
       {/* HEADER */}
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
-
+        {/* <div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-lg shadow-lg border bg-sidebar hover:bg-sidebar-accent"
+            onClick={toggleSidebar}
+            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <PanelLeftClose className="size-4" />
+          </Button>
+        </div> */}
+        <CompanyLogo />
         <NewCaptureButton />
       </SidebarHeader>
 
@@ -81,7 +97,8 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       {/* FOOTER */}
-      <SidebarFooter>
+      <SidebarFooter className="pb-14 gap-2">
+        <ThemeToggle />
         <NavUser user={data.user} />
       </SidebarFooter>
 
