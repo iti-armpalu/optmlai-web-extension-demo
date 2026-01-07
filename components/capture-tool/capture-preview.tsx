@@ -33,11 +33,7 @@ export function CapturePreview({
         onClick={onClose}
         className="
           absolute top-2 right-2 
-          p-1.5 
-          rounded-full 
-          bg-white/70 
-          hover:bg-white 
-          shadow 
+          p-1.5
           transition
         "
         aria-label="Close preview"
@@ -46,11 +42,12 @@ export function CapturePreview({
       </button>
 
       <h3 className="text-sm font-semibold mb-3 pr-6">
-        Captured Area
+        Image Preview /
+        Ad Creative Preview
       </h3>
 
       {/* Image preview */}
-      <div className="relative w-full aspect-video rounded-md overflow-hidden border mb-4 bg-muted">
+      <div className="relative w-full aspect-video  overflow-hidden border mb-4">
         <Image
           src={imageData}
           alt="Captured screenshot"

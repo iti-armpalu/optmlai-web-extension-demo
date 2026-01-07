@@ -1,13 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Trophy, Target, Zap, Sparkle, Info } from "lucide-react"
-import { MetricCard } from "./_data/metric-card"
+import { MetricCard } from "./metric-card"
 
 
 interface OverviewTabProps {
     bestContext: {
         name: string
         category: string
-        conversionPotential: number
     }
 }
 
@@ -42,15 +41,15 @@ export function OverviewTab({ bestContext }: OverviewTabProps) {
                     ratingExplanation="Message is moderately clear, some refinement needed"
                 />
 
-                <MetricCard
+                {/* <MetricCard
                     title="Best Performing Context"
                     value={bestContext.name}
-                    description={`${bestContext.conversionPotential}% conversion potential`}
+                    // description={`${bestContext.conversionPotential}% conversion potential`}
                     valueColor="text-purple-600"
                     badge={`${bestContext.category} Context`}
                     tooltipContent="The context with the highest predicted conversion potential based on attention capture, message clarity, and user behavior patterns. This indicates where your creative will perform best."
                     ratingExplanation="Highest predicted performance across all contexts"
-                />
+                /> */}
                 {/* <Card className="border-purple-600/10 bg-purple-50/50">
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -112,7 +111,7 @@ export function OverviewTab({ bestContext }: OverviewTabProps) {
                             <CardContent>
                                 <div className="text-xl font-bold text-chart-1">{bestContext.name}</div>
                                 <div className="text-sm text-muted-foreground mt-1">{bestContext.category} Context</div>
-                                <div className="text-2xl font-bold text-chart-1 mt-2">{bestContext.conversionPotential}%</div>
+                                {/* <div className="text-2xl font-bold text-chart-1 mt-2">{bestContext.conversionPotential}%</div> */}
                                 <div className="text-xs text-muted-foreground">Conversion Potential</div>
                             </CardContent>
                         </Card>

@@ -5,16 +5,17 @@ import * as htmlToImage from "html-to-image"
 
 import { SelectionBox } from "./selection-box"
 import { CaptureToolbar } from "./capture-toolbar"
-import { CapturePreview } from "./capture-preview"
+import { CaptureInstructionBox } from "./capture-instruction-box"
 
 import { useCaptureStore } from "@/store/capture-store"
+import { useUIStore } from "@/store/ui-store"
 
 interface AreaCaptureOverlayProps {
-  onCapture: (img: string) => void
+  onCapture: (img: string) => void // (can be removed later if unused)
   onCancel: () => void
 }
 
-export function AreaCaptureOverlay({ onCapture, onCancel }: AreaCaptureOverlayProps) {
+export function AreaCaptureOverlay({ onCancel }: AreaCaptureOverlayProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
 
   // Freeze scroll during overlay
@@ -26,33 +27,20 @@ export function AreaCaptureOverlay({ onCapture, onCancel }: AreaCaptureOverlayPr
     }
   }, [])
 
-  // -------------------------
-  // SELECTION STATE
-  // -------------------------
+  // Selection state
   const [dragging, setDragging] = useState(false)
   const [selection, setSelection] = useState<{ x: number; y: number; w: number; h: number } | null>(null)
   const start = useRef({ x: 0, y: 0 })
 
-  const [previewImg, setPreviewImg] = useState<string | null>(null)
-
-  // -------------------------
-  // START DRAG
-  // -------------------------
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (previewImg) return
     if (e.target !== overlayRef.current) return
-
     start.current = { x: e.clientX, y: e.clientY }
     setSelection(null)
     setDragging(true)
   }
 
-  // -------------------------
-  // DRAGGING
-  // -------------------------
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!dragging) return
-
     const x1 = start.current.x
     const y1 = start.current.y
     const x2 = e.clientX
@@ -66,90 +54,54 @@ export function AreaCaptureOverlay({ onCapture, onCancel }: AreaCaptureOverlayPr
     })
   }
 
-  // -------------------------
-  // END DRAG
-  // -------------------------
   const handleMouseUp = () => setDragging(false)
 
-  // -------------------------
-  // RESIZING
-  // -------------------------
   const handleResize = (box: { x: number; y: number; w: number; h: number }) => {
     setSelection(box)
   }
 
-  // -------------------------
-  // CAPTURE SCREENSHOT
-  // -------------------------
-  // const captureNow = async () => {
-
-  //    NEED TO CAPTURE THE IMAGE HERE
-
-
-  //     setPreviewImg("THE CAPTURED IMAGE")
-  //   } catch (err) {
-  //     console.error("Capture failed:", err)
-  //   } finally {
-  //     overlay.style.display = ""
-  //   }
-  // }
-
+  // Capture -> store as DRAFT -> open global preview popup -> close overlay
   const captureNow = async () => {
-    if (!selection) return;
+    if (!selection) return
 
-    const { x, y, w, h } = selection;
-    const overlay = overlayRef.current;
-    if (!overlay) return;
+    const { x, y, w, h } = selection
+    const overlay = overlayRef.current
+    if (!overlay) return
 
     try {
-      // Hide overlay DOM (but html-to-image may still SEE IT without filter)
-      overlay.style.display = "none";
+      // Hide overlay while rendering the page to an image
+      overlay.style.display = "none"
 
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = window.devicePixelRatio || 1
 
-      // STEP 1 — Capture full page but exclude UI overlays/toolbars
+      // 1) Render full page to PNG (filter out capture UI)
       const fullImage = await htmlToImage.toPng(document.body, {
         quality: 1,
         pixelRatio: dpr,
         cacheBust: true,
-
-        // Exclude capture UI
         filter: (node) => {
-          // Ignore non-elements (text nodes, comments, etc.)
-          if (!(node instanceof HTMLElement)) return true;
-        
-          const id = node.id;
-        
-          // Exclude specific UI elements by id
-          if (id === "capture-overlay" || id === "capture-toolbar" || id === "capture-selection") {
-            return false;
-          }
-        
-          // Or exclude anything marked as capture UI
-          if (node.classList.contains("capture-ui")) {
-            return false;
-          }
-        
-          return true;
+          if (!(node instanceof HTMLElement)) return true
+          const id = node.id
+          if (id === "capture-overlay" || id === "capture-toolbar" || id === "capture-selection") return false
+          if (node.classList.contains("capture-ui")) return false
+          return true
         },
-      });
+      })
 
-      // STEP 2 — create image object
-      const img = new Image();
-      img.src = fullImage;
-      await new Promise((res) => (img.onload = res));
+      // 2) Crop the rendered image to the selection
+      const img = new Image()
+      img.src = fullImage
+      await img.decode()
 
-      // STEP 3 — DPI + scroll correction
-      const correctedX = (x + window.scrollX) * dpr;
-      const correctedY = (y + window.scrollY) * dpr;
-      const correctedW = w * dpr;
-      const correctedH = h * dpr;
+      const correctedX = (x + window.scrollX) * dpr
+      const correctedY = (y + window.scrollY) * dpr
+      const correctedW = w * dpr
+      const correctedH = h * dpr
 
-      // STEP 4 — crop via canvas
-      const canvas = document.createElement("canvas");
-      canvas.width = correctedW;
-      canvas.height = correctedH;
-      const ctx = canvas.getContext("2d")!;
+      const canvas = document.createElement("canvas")
+      canvas.width = correctedW
+      canvas.height = correctedH
+      const ctx = canvas.getContext("2d")!
 
       ctx.drawImage(
         img,
@@ -161,43 +113,32 @@ export function AreaCaptureOverlay({ onCapture, onCancel }: AreaCaptureOverlayPr
         0,
         correctedW,
         correctedH
-      );
+      )
 
-      setPreviewImg(canvas.toDataURL("image/png"));
+      const dataUrl = canvas.toDataURL("image/png")
+
+      // 3) Put into DRAFT (NOT saved history yet)
+      useCaptureStore.getState().setDraftCapture({
+        image: dataUrl,
+        source: "area",
+        metadata: {
+          x,
+          y,
+          width: w,
+          height: h,
+        },
+      })
+
+      // 4) Show the global preview popup (user can cancel or generate)
+      useUIStore.getState().openCapturePreview()
+
+      // 5) Close the overlay
+      onCancel()
     } catch (err) {
-      console.error("Capture failed:", err);
+      console.error("Capture failed:", err)
     } finally {
-      overlay.style.display = "";
+      overlay.style.display = ""
     }
-  };
-
-
-
-
-
-  // -------------------------
-  // FINALIZE (save + pass back)
-  // -------------------------
-  const finalize = () => {
-    if (!previewImg || !selection) return
-
-    // Save to capture-store
-    useCaptureStore.getState().addCapture({
-      image: previewImg,
-      source: "area",
-      metadata: {
-        x: selection.x,
-        y: selection.y,
-        width: selection.w,
-        height: selection.h,
-      },
-    })
-
-    // Continue to report generation
-    onCapture(previewImg)
-
-    // Close overlay
-    onCancel()
   }
 
   // ESC closes overlay
@@ -216,15 +157,15 @@ export function AreaCaptureOverlay({ onCapture, onCancel }: AreaCaptureOverlayPr
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
     >
-      {/* DARK BACKDROP */}
+      {/* Dark backdrop with “hole” for selection */}
       <div
         ref={overlayRef}
         id="capture-overlay"
         className="absolute inset-0 bg-black/30"
         style={{
-          ...(selection && !previewImg
+          ...(selection
             ? {
-              clipPath: `polygon(
+                clipPath: `polygon(
                   0% 0%,
                   0% 100%,
                   ${selection.x}px 100%,
@@ -236,13 +177,30 @@ export function AreaCaptureOverlay({ onCapture, onCancel }: AreaCaptureOverlayPr
                   100% 100%,
                   100% 0%
                 )`,
-            }
+              }
             : {}),
         }}
       />
 
-      {/* SELECTION BOX */}
-      {selection && !previewImg && (
+      {!selection && (
+        <CaptureInstructionBox>
+          <p className="text-sm text-muted-foreground max-w-md">
+            Click and drag to select the area of the screen you want to capture. You can resize the selection using the
+            corner handles.
+          </p>
+        </CaptureInstructionBox>
+      )}
+
+      {selection && !dragging && (
+        <CaptureInstructionBox>
+          <p className="text-sm text-muted-foreground max-w-md">
+            Drag the corner handles to resize your selection. Click <strong>Capture</strong> when ready, or{" "}
+            <strong>Reset</strong> to start over.
+          </p>
+        </CaptureInstructionBox>
+      )}
+
+      {selection && (
         <SelectionBox
           x={selection.x}
           y={selection.y}
@@ -252,26 +210,12 @@ export function AreaCaptureOverlay({ onCapture, onCancel }: AreaCaptureOverlayPr
         />
       )}
 
-      {/* TOOLBAR */}
-      {!previewImg && (
-        <CaptureToolbar
-          hasSelection={!!selection}
-          onReset={() => setSelection(null)}
-          onCancel={onCancel}
-          onConfirm={captureNow}
-        />
-      )}
-
-      {/* PREVIEW */}
-      {previewImg && (
-        <div className="absolute bottom-8 right-8 z-[999999]">
-          <CapturePreview
-            imageData={previewImg}
-            onGenerateReport={finalize}
-            onClose={onCancel}
-          />
-        </div>
-      )}
+      <CaptureToolbar
+        hasSelection={!!selection}
+        onReset={() => setSelection(null)}
+        onCancel={onCancel}
+        onConfirm={captureNow}
+      />
     </div>
   )
 }

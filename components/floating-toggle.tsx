@@ -12,6 +12,7 @@ import { useUIStore } from "@/store/ui-store"
 import { AreaCaptureOverlay } from "./capture-tool/area-capture-overlay"
 import { ProcessingPopover } from "./processing-popover"
 import { processCapturedImage } from "@/lib/report-pipeline"
+import { CapturePreviewPopupHost } from "./capture-tool/capture-preview-popup-host"
 
 export function FloatingToggle() {
     const {
@@ -55,10 +56,14 @@ export function FloatingToggle() {
 
     return (
         <TooltipProvider>
+
+
+            {/* <CapturePreviewPopupHost onGenerate={handleCapture} /> */}
+
             {/* PROCESSING */}
-            {isProcessing && (
+            {/* {isProcessing && (
                 <ProcessingPopover isOpen={isProcessing} />
-            )}
+            )} */}
 
             {/* AREA CAPTURE OVERLAY */}
             {isCapturing && (
@@ -80,13 +85,28 @@ export function FloatingToggle() {
                 <div
                     className={`transition-all duration-300 ${sidebarOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-[400px] pointer-events-none"}`}
                 >
-                    <div className="fixed top-0">
-                        <SidebarProvider defaultOpen={false}>
-                            <AppSidebar
-                                side="right"
-                                variant="floating"
-                            />
-                        </SidebarProvider>
+                    <div className="fixed top-0 right-0">
+                        <div className="relative">
+                            <SidebarProvider defaultOpen={false}>
+                                <AppSidebar
+                                    side="right"
+                                    variant="floating"
+                                />
+                            </SidebarProvider>
+
+                            {/* Popup anchored to sidebar */}
+                            <div className="absolute bottom-2 -left-80 z-[999999] animate-in slide-in-from-bottom-4">
+                                <CapturePreviewPopupHost onGenerate={handleCapture} />
+
+                                {/* PROCESSING */}
+                                {isProcessing && (
+                                    <ProcessingPopover isOpen={isProcessing} />
+                                )}
+
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
 

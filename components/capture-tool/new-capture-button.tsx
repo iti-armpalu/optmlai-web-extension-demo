@@ -7,6 +7,7 @@ import { useState } from "react"
 import { useSidebarCollapsed } from "@/hooks/use-sidebar-collapsed"
 import { useUIStore } from "@/store/ui-store"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { useCaptureStore } from "@/store/capture-store"
 
 export function NewCaptureButton() {
   const [isOpen, setIsOpen] = useState(false)
@@ -19,19 +20,40 @@ export function NewCaptureButton() {
     const input = document.createElement("input")
     input.type = "file"
     input.accept = "image/*"
-    input.onchange = (e) => {
+
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0]
-      if (file) {
+      if (!file) return
+
+      const imageData = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader()
-        reader.onload = (event) => {
-          const imageData = event.target?.result as string
-          console.log("[v0] Image uploaded:", imageData)
-        }
+        reader.onload = () => resolve(reader.result as string)
+        reader.onerror = () => reject(reader.error)
         reader.readAsDataURL(file)
-      }
+      })
+
+      const { width, height } = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+        img.onerror = () => reject(new Error("Failed to load uploaded image"))
+        img.src = imageData
+      })
+
+      // ✅ DRAFT (not saved yet)
+      useCaptureStore.getState().setDraftCapture({
+        image: imageData,
+        source: "upload",
+        metadata: { width, height },
+      })
+
+      // ✅ show preview popup
+      useUIStore.getState().openCapturePreview()
     }
+
     input.click()
   }
+
+
 
   const handleSelect = () => {
     console.log("Opening select")
@@ -47,15 +69,6 @@ export function NewCaptureButton() {
       <div className="py-1.5">
         <div className="mb-2 px-2 text-xs font-medium text-sidebar-foreground/70">Start New Capture</div>
         <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-2 grid grid-cols-2 gap-2 animate-in fade-in-0 zoom-in-95">
-          {/* <button
-          onClick={startCapture}
-          className="group flex flex-col items-center justify-center gap-1.5 rounded-md border border-primary/30 bg-primary/5 p-3 transition-all hover:border-primary hover:bg-primary/10 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <div className="flex size-7 items-center justify-center rounded-md bg-primary/15 text-primary transition-colors group-hover:bg-primary/25">
-            <ScanLine className="size-4" />
-          </div>
-          <span className="text-xs font-medium leading-none">Capture Area</span>
-        </button> */}
 
           <Button
             variant="ghost"
@@ -69,18 +82,6 @@ export function NewCaptureButton() {
             </div>
           </Button>
 
-
-
-          {/* <button
-          onClick={handleUpload}
-          className="group flex flex-col items-center justify-center gap-1.5 rounded-md border bg-background p-3 transition-all hover:border-primary/40 hover:bg-accent hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <div className="flex size-7 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-            <Upload className="size-4" />
-          </div>
-          <span className="text-xs font-medium leading-none">Upload Image</span>
-        </button> */}
-
           <Button
             variant="ghost"
             className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
@@ -92,16 +93,6 @@ export function NewCaptureButton() {
               <div className="text-[10px] text-muted-foreground">From computer</div>
             </div>
           </Button>
-
-          {/* <button
-          onClick={handleSelect}
-          className="group flex flex-col items-center justify-center gap-1.5 rounded-md border bg-background p-3 transition-all hover:border-primary/40 hover:bg-accent hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <div className="flex size-7 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-            <MousePointerClick className="size-4" />
-          </div>
-          <span className="text-xs font-medium leading-none">Select</span>
-        </button> */}
 
           <Button
             variant="ghost"
@@ -115,15 +106,6 @@ export function NewCaptureButton() {
             </div>
           </Button>
 
-          {/* <button
-          onClick={handleFromCaptures}
-          className="group flex flex-col items-center justify-center gap-1.5 rounded-md border bg-background p-3 transition-all hover:border-primary/40 hover:bg-accent hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <div className="flex size-7 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
-            <FolderOpen className="size-4" />
-          </div>
-          <span className="text-xs font-medium leading-none">From Captures</span>
-        </button> */}
 
 
           <Button
@@ -146,78 +128,6 @@ export function NewCaptureButton() {
   }
 
   return (
-    // <SidebarMenu>
-    //   <SidebarMenuItem>
-    //     <div className="relative">
-    //       {/* MAIN BUTTON */}
-    //       <SidebarMenuButton
-    //         onClick={startCapture}
-    //         onMouseEnter={() => setIsOpen(true)}
-    //         onMouseLeave={() => setIsOpen(false)}
-    //         className="bg-primary hover:bg-primary/90 text-primary-foreground justify-center group-data-[collapsible=icon]:justify-center group-data-[collapsible=offcanvas]:justify-center"
-    //       >
-    //         <CirclePlus className={`h-4 w-4 ${isOpen ? "rotate-45" : ""}`} />
-    //         <span className="text-sm font-semibold group-data-[collapsible=icon]:hidden">
-    //           Start New Capture
-    //         </span>
-    //       </SidebarMenuButton>
-
-    //       {/* EXPANDED MENU */}
-    //       {!isCollapsed && (
-    //         <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-2 grid grid-cols-2 gap-2 animate-in fade-in-0 zoom-in-95">
-    //           <Button
-    //             variant="ghost"
-    //             className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-    //             onClick={startCapture}
-    //           >
-    //             <ScanLine className="h-5 w-5 text-primary" />
-    //             <div className="text-center">
-    //               <div className="font-medium text-xs">Capture Area</div>
-    //               <div className="text-[10px] text-muted-foreground">Select region</div>
-    //             </div>
-    //           </Button>
-
-    //           <Button
-    //             variant="ghost"
-    //             className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-    //             onClick={handleUpload}
-    //           >
-    //             <Upload className="h-5 w-5 text-primary" />
-    //             <div className="text-center">
-    //               <div className="font-medium text-xs">Upload Image</div>
-    //               <div className="text-[10px] text-muted-foreground">From computer</div>
-    //             </div>
-    //           </Button>
-
-    //           <Button
-    //             variant="ghost"
-    //             className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-    //             onClick={handleFromCaptures}
-    //           >
-    //             <FolderOpen className="h-5 w-5 text-primary" />
-    //             <div className="text-center">
-    //               <div className="font-medium text-xs">From Captures</div>
-    //               <div className="text-[10px] text-muted-foreground">Use existing</div>
-    //             </div>
-    //           </Button>
-
-    //           <Button
-    //             variant="ghost"
-    //             className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-    //             onClick={handleFullPage}
-    //           >
-    //             <Monitor className="h-5 w-5 text-primary" />
-    //             <div className="text-center">
-    //               <div className="font-medium text-xs">Full Page</div>
-    //               <div className="text-[10px] text-muted-foreground">Entire viewport</div>
-    //             </div>
-    //           </Button>
-
-    //         </div>
-    //       )}
-    //     </div>
-    //   </SidebarMenuItem>
-    // </SidebarMenu>
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button className="w-full justify-center px-2" size="icon">

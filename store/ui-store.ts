@@ -27,8 +27,20 @@ interface UIState {
   isProcessing: boolean
   startProcessing: () => void
   stopProcessing: () => void
-  finishProcessing: () => void // <--- NEW
+  finishProcessing: () => void
+
+  // Capture preview popup (global)
+  isCapturePreviewOpen: boolean
+  openCapturePreview: () => void
+  closeCapturePreview: () => void
+
+  // when user clicks Generate Report, set this true; your report UI can react to it.
+  shouldStartReport: boolean
+  requestReport: () => void
+  clearReportRequest: () => void
 }
+
+
 
 export const useUIStore = create<UIState>((set, get) => ({
   // ------------------------------------
@@ -65,4 +77,13 @@ export const useUIStore = create<UIState>((set, get) => ({
     isProcessing: false,
     activeDrawer: "report",  // ✔ open only after full animation
   }),
+
+  // Capture preview popup
+  isCapturePreviewOpen: false,
+  openCapturePreview: () => set({ isCapturePreviewOpen: true }),
+  closeCapturePreview: () => set({ isCapturePreviewOpen: false }),
+
+  shouldStartReport: false,
+  requestReport: () => set({ shouldStartReport: true }),
+  clearReportRequest: () => set({ shouldStartReport: false }),
 }))

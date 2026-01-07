@@ -65,7 +65,7 @@ export function ProcessingPopover({
   if (!isOpen) return null
 
   return (
-    <div className="fixed bottom-4 right-4 z-[300] animate-in slide-in-from-bottom-4">
+    // <div className="fixed bottom-4 right-4 z-[300] animate-in slide-in-from-bottom-4">
       <Card className="p-4 shadow-lg border-2 w-80 bg-background">
         <div className="flex flex-col gap-3">
 
@@ -102,6 +102,6 @@ export function ProcessingPopover({
           </div>
         </div>
       </Card>
-    </div>
+    // </div>
   )
 }

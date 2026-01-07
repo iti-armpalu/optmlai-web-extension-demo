@@ -18,7 +18,7 @@ import {
   CheckCircle2,
   InfoIcon,
 } from "lucide-react"
-import { aiUnderstanding } from "./_data/data"
+import { aiUnderstanding } from "./_data"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 
@@ -114,28 +114,9 @@ export function ContentInterpretationTab() {
   return (
     <div className="space-y-8">
 
-      {/* Header Explanation */}
-      {/* <div className="p-4 rounded-xl border border-primary/20">
-        <div className="flex items-start gap-3">
-          <div>
-            <h2 className="font-semibold text-foreground mb-1">How AI Interprets Your Creative</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              This tab reveals how our AI model perceives and understands your ad creative. It explains the detected
-              brand identity, product positioning, messaging clarity, emotional resonance, and thematic context —
-              providing transparency into why specific recommendations were made and how optimal placements were
-              determined.
-            </p>
-          </div>
-        </div>
-      </div> */}
-
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
         <Info className="h-4 w-4 shrink-0" />
         <p>
-          {/* This tab reveals how our AI model perceives and understands your ad creative.
-          It explains the detected brand identity, product positioning, messaging clarity,
-          emotional resonance, and thematic context — providing transparency into why
-          specific recommendations were made and how optimal placements were determined. */}
           This view shows how our AI ‘reads’ your creative: the brand it sees, the product
           it thinks you’re selling, the message it detects, and the emotions and themes it
           picks up. It describes interpretation only and does not judge performance.
@@ -264,17 +245,6 @@ export function ContentInterpretationTab() {
               </CardContent>
             </Card>
           </div>
-
-          {/* <div className="grid md:grid-cols-2 gap-3">
-            <div className="p-3 rounded-lg bg-secondary/30">
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Campaign Intent</span>
-              <p className="text-sm font-medium text-foreground mt-1">{data.objective.intent}</p>
-            </div>
-            <div className="p-3 rounded-lg bg-secondary/30">
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Target Action</span>
-              <p className="text-sm font-medium text-foreground mt-1">{data.objective.targetAction}</p>
-            </div>
-          </div> */}
 
 
           {/* Primary Goal & Supporting Objectives - Side by Side */}
