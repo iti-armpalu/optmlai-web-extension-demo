@@ -17,6 +17,7 @@ import {
   Sparkle,
   CheckCircle2,
   InfoIcon,
+  MessageSquare,
 } from "lucide-react"
 import { aiUnderstanding } from "./_data"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
@@ -108,6 +109,44 @@ const TagList = ({ tags, color = "primary" }: { tags: string[]; color?: string }
   </div>
 )
 
+const SignalCard = ({
+  icon: Icon,
+  title,
+  description,
+  impactType,
+}: {
+  icon: React.ElementType
+  title: string
+  description: string
+  impactType: "Visual Impact" | "Cognitive Impact" | "Both"
+}) => (
+  <Card className="hover:border-primary/40 transition-all duration-200">
+    <CardContent className="pt-6">
+      <div className="flex items-start gap-4">
+        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+          <Icon className="w-5 h-5 text-primary" />
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="font-semibold text-foreground">{title}</h3>
+            <span
+              className={cn(
+                "text-[10px] font-medium px-2 py-0.5 rounded-full",
+                impactType === "Visual Impact" && "bg-blue-500/10 text-blue-600",
+                impactType === "Cognitive Impact" && "bg-purple-500/10 text-purple-600",
+                impactType === "Both" && "bg-green-500/10 text-green-600",
+              )}
+            >
+              {impactType}
+            </span>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+)
+
 export function ContentInterpretationTab() {
   const data = aiUnderstanding
 
@@ -117,13 +156,71 @@ export function ContentInterpretationTab() {
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
         <Info className="h-4 w-4 shrink-0" />
         <p>
-          This view shows how our AI ‘reads’ your creative: the brand it sees, the product
+          {/* This view shows how our AI ‘reads’ your creative: the brand it sees, the product
           it thinks you’re selling, the message it detects, and the emotions and themes it
-          picks up. It describes interpretation only and does not judge performance.
+          picks up. It describes interpretation only and does not judge performance. */}
+          This view explains which creative signals most influenced your Visual and Cognitive Impact scores. It highlights how brand presence, 
+          message structure, product information, and calls to action shaped attention capture and message understanding.
         </p>
       </div>
 
-      <ObjectiveCard
+      <div className="flex items-start gap-6">
+
+        <div>
+          <h2 className="text-2xl font-bold text-foreground mb-1">What Drove Your Scores</h2>
+          <p className="text-sm text-muted-foreground">
+            These signals directly influenced your Visual and Cognitive Impact scores
+          </p>
+          <div className="mt-2 p-3 bg-muted/30 rounded-lg border border-border/50">
+            <div className="flex items-start gap-2">
+              <Info className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p>
+                  <span className="font-medium text-blue-600">Visual Impact</span> reflects attention capture and
+                  visual salience
+                </p>
+                <p>
+                  <span className="font-medium text-purple-600">Cognitive Impact</span> reflects ease of understanding
+                  and message processing
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div className="space-y-3">
+        <SignalCard
+          icon={Building2}
+          title="Brand Presence Signals"
+          description="Strong brand visibility through consistent visual identity reduces cognitive processing effort, though subtle branding may require repeated exposure for full recognition."
+          impactType="Both"
+        />
+
+        <SignalCard
+          icon={MessageSquare}
+          title="Message Structure & Density"
+          description="Clear message hierarchy with moderate information density enables comprehension within 3-5 seconds, though complex concepts may benefit from secondary touchpoints."
+          impactType="Cognitive Impact"
+        />
+
+        <SignalCard
+          icon={Package}
+          title="Product Information Signals"
+          description="Visual presentation of product features supports immediate recognition of the SaaS offering, though technical depth requires extended engagement to fully understand."
+          impactType="Visual Impact"
+        />
+
+        <SignalCard
+          icon={MousePointerClick}
+          title="Call-to-Action Signals"
+          description="Multiple strategic CTA placements drive visual attention effectively, though the premium positioning may create friction for price-sensitive audiences."
+          impactType="Both"
+        />
+      </div>
+
+      {/* <ObjectiveCard
         icon={Sparkles}
         title="Ad Creative Objective"
         subtitle="The primary goal and intent of this advertorial"
@@ -166,7 +263,7 @@ export function ContentInterpretationTab() {
             </div>
           </div>
         </div>
-      </ObjectiveCard>
+      </ObjectiveCard> */}
 
 
 
@@ -179,7 +276,7 @@ export function ContentInterpretationTab() {
       >
         <div className="space-y-6">
 
-          <div className="flex items-start gap-3">
+          {/* <div className="flex items-start gap-3">
             <Sparkle className="w-5 h-5" />
             <div className="flex-1 space-y-2">
               <div className="flex-1">
@@ -208,14 +305,14 @@ export function ContentInterpretationTab() {
                 {data.objective.description}
               </p>
             </div>
-          </div>
+          </div> */}
 
           {/* <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 via-primary/5 to-accent/5 border border-primary/20"> */}
           {/* <p className="text-foreground leading-relaxed">{data.objective.description}</p> */}
           {/* </div> */}
 
           {/* Key Details Grid */}
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
+          {/* <div className="grid md:grid-cols-3 gap-4 mb-6">
             <Card className="border-none shadow-none bg-purple-100">
               <CardContent className="px-3 pt-0">
                 <div className="flex items-center gap-2 mb-2">
@@ -228,7 +325,6 @@ export function ContentInterpretationTab() {
             <Card className="border-none shadow-none bg-purple-100">
               <CardContent className="px-3 pt-0">
                 <div className="flex items-center gap-2 mb-2">
-                  {/* <MessageSquare className="w-4 h-4 text-primary" /> */}
                   <span className="text-xs font-medium text-purple-600">Desired Action</span>
                 </div>
                 <p className="text-sm text-foreground">{data.objective.targetAction}</p>
@@ -238,32 +334,31 @@ export function ContentInterpretationTab() {
             <Card className="border-none shadow-none bg-purple-100">
               <CardContent className="px-3 pt-0">
                 <div className="flex items-center gap-2 mb-2">
-                  {/* <CheckCircle2 className="w-4 h-4 text-success" /> */}
                   <span className="text-xs font-medium text-purple-600">Expected Outcome</span>
                 </div>
                 <p className="text-sm text-foreground">{data.objective.expectedOutcome}</p>
               </CardContent>
             </Card>
-          </div>
+          </div> */}
 
 
           {/* Primary Goal & Supporting Objectives - Side by Side */}
           <div className="grid md:grid-cols-2 gap-8">
-            {/* Primary Goal - Left Side */}
-            <Card className="border-none shadow-none bg-purple-100">
+
+            {/* <Card className="border-none shadow-none bg-purple-100">
               <CardContent className="px-3 pt-0">
                 <div className="flex items-center gap-2 mb-4">
                   <span className="text-xs font-semibold uppercase tracking-wider text-purple-600">Primary Goal</span>
                 </div>
                 <p className="text-base font-medium text-foreground">{data.objective.primaryGoal}</p>
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* Supporting Objectives - Right Side */}
 
-            <Card className="border-none shadow-none bg-transparent">
+            {/* <Card className="border-none shadow-none bg-transparent">
               <CardContent className="px-3 pt-0">
-                {/* <div> */}
+
 
                 <div className="flex flex-col items-start gap-1 mb-3">
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -278,17 +373,14 @@ export function ContentInterpretationTab() {
                       key={i}
                       className="flex items-center gap-3"
                     >
-                      {/* <div className="w-6 h-6 rounded-full bg-accent/20 text-accent text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">
-                      {i + 1}
-                    </div> */}
                       <CheckCircle2 className="w-5 h-5 text-purple-600" />
                       <span className="text-sm text-foreground leading-relaxed">{goal}</span>
                     </div>
                   ))}
                 </div>
-                {/* </div> */}
+       
               </CardContent>
-            </Card>
+            </Card> */}
 
 
           </div>
@@ -321,7 +413,7 @@ export function ContentInterpretationTab() {
       {/* Main Grid */}
       <div className="grid md:grid-cols-2 gap-4">
         {/* Brand Detection */}
-        <SectionCard icon={Building2} title="Brand Interpretation" subtitle="How the AI interprets your brand signals and identity" delay={50}>
+        {/* <SectionCard icon={Building2} title="Brand Interpretation" subtitle="How the AI interprets your brand signals and identity" delay={50}>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 rounded-lg bg-muted/40">
               <span className="text-[10px] text-muted-foreground uppercase tracking-wider">Detected Brand</span>
@@ -341,10 +433,10 @@ export function ContentInterpretationTab() {
               <p className="text-sm text-foreground mt-1">{data.brand.visualIdentity}</p>
             </div>
           </div>
-        </SectionCard>
+        </SectionCard> */}
 
         {/* Product Understanding */}
-        <SectionCard
+        {/* <SectionCard
           icon={Package}
           title="Product Interpretation"
           subtitle="How the AI interprets your product and key features"
@@ -374,10 +466,10 @@ export function ContentInterpretationTab() {
               <p className="text-sm text-foreground mt-1">{data.product.pricePoint}</p>
             </div>
           </div>
-        </SectionCard>
+        </SectionCard> */}
 
         {/* Message Interpretation */}
-        <SectionCard
+        {/* <SectionCard
           icon={MessageCircle}
           title="Message Interpretation"
           subtitle="How the AI interprets your main and supporting messages"
@@ -414,10 +506,10 @@ export function ContentInterpretationTab() {
             </div>
 
           </div>
-        </SectionCard>
+        </SectionCard> */}
 
         {/* Narrative Structure */}
-        <SectionCard
+        {/* <SectionCard
           icon={BookOpen}
           title="Narrative Structure"
           subtitle="How the AI interprets your creative’s story flow"
@@ -451,10 +543,10 @@ export function ContentInterpretationTab() {
               <p className="text-sm text-foreground mt-1">{data.narrative.resolution}</p>
             </div>
           </div>
-        </SectionCard>
+        </SectionCard> */}
 
         {/* CTA Analysis */}
-        <SectionCard
+        {/* <SectionCard
           icon={MousePointerClick}
           title="Call-to-Action Interpretation"
           subtitle="How the AI interprets your CTA and its phrasing"
@@ -477,13 +569,12 @@ export function ContentInterpretationTab() {
             </div>
             <div className="grid grid-cols-2 gap-6">
               <ConfidenceMeter value={data.cta.clarity} label="CTA Clarity" />
-              {/* <ConfidenceMeter value={data.cta.urgency} label="CTA Urgency (based on phrasing)" /> */}
             </div>
           </div>
-        </SectionCard>
+        </SectionCard> */}
 
         {/* Value Proposition */}
-        <SectionCard
+        {/* <SectionCard
           icon={Gem}
           title="Value Proposition Interpretation"
           subtitle="How the AI interprets your ad’s communicated value"
@@ -511,10 +602,10 @@ export function ContentInterpretationTab() {
             </div>
             <p className="text-xs text-muted-foreground mt-1">* Model interpretation</p>
           </div>
-        </SectionCard>
+        </SectionCard> */}
 
         {/* Emotional Tone */}
-        <SectionCard icon={Heart} title="Emotional Tone Interpretation" subtitle="How the AI interprets your creative’s emotional tone" delay={350}>
+        {/* <SectionCard icon={Heart} title="Emotional Tone Interpretation" subtitle="How the AI interprets your creative’s emotional tone" delay={350}>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 rounded-lg bg-muted/40">
               <div>
@@ -545,10 +636,10 @@ export function ContentInterpretationTab() {
 
             </div>
           </div>
-        </SectionCard>
+        </SectionCard> */}
 
         {/* Thematic Framing */}
-        <SectionCard icon={Palette} title="Thematic Framing" subtitle="How the AI interprets your creative’s underlying themes" delay={400}>
+        {/* <SectionCard icon={Palette} title="Thematic Framing" subtitle="How the AI interprets your creative’s underlying themes" delay={400}>
           <div className="space-y-4">
             <div className="p-3 rounded-lg bg-muted/40">
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground">Central Theme</span>
@@ -567,7 +658,7 @@ export function ContentInterpretationTab() {
               <p className="text-sm text-foreground mt-1">{data.thematicFraming.seasonality}</p>
             </div>
           </div>
-        </SectionCard>
+        </SectionCard> */}
       </div>
 
       {/* Footer Note */}

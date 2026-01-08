@@ -24,7 +24,7 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    <Card className="lg:col-span-2 border-green-600/10 bg-green-50/50 text-green-600 dark:bg-green-950/30 dark:text-green-500">
+                    <Card className="lg:col-span-3 border-green-600/10 bg-green-50/50 text-green-600 dark:bg-green-950/30 dark:text-green-500">
                         <CardContent>
                             <div className="flex items-start gap-3">
                                 <Sparkle className="w-5 h-5" />
@@ -36,7 +36,7 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                                         (early). Body text and CTA receive minimal attention during fast-scrolling or quick-glance moments.
                                     </p>
 
-                                    <div className="flex gap-4 pt-2">
+                                    {/* <div className="flex gap-4 pt-2">
                                         <div className="text-xs flex items-center gap-1.5">
                                             <span className="text-muted-foreground">Attention Score: </span>
                                             <span className="font-semibold text-foreground">92%</span>
@@ -67,20 +67,19 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                                                 </TooltipContent>
                                             </Tooltip>
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                 </div>
                             </div>
                         </CardContent>
                     </Card>
-                    <div className="border-l border-border pl-6">
+                    {/* <div className="border-l border-border pl-6">
                         <h4 className="text-xs font-semibold text-foreground mb-1">Attention Levels</h4>
                         <p className="text-[10px] text-muted-foreground mb-3 leading-tight">
                             (Based on predicted likelihood of fixation)
                         </p>
                         <div className="space-y-2">
                             <div className="flex items-start gap-2">
-                                {/* <div className="w-7 h-7 rounded bg-gradient-to-br from-red-600 to-red-500 flex-shrink-0" /> */}
                                 <div>
                                     <div className="text-xs font-medium">Immediate (very high)</div>
                                     <div className="text-[10px] text-muted-foreground leading-tight">
@@ -89,7 +88,6 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                                 </div>
                             </div>
                             <div className="flex items-start gap-2">
-                                {/* <div className="w-7 h-7 rounded bg-gradient-to-br from-orange-500 to-orange-400 flex-shrink-0" /> */}
                                 <div>
                                     <div className="text-xs font-medium">Early (high)</div>
                                     <div className="text-[10px] text-muted-foreground leading-tight">
@@ -98,7 +96,6 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                                 </div>
                             </div>
                             <div className="flex items-start gap-2">
-                                {/* <div className="w-7 h-7 rounded bg-gradient-to-br from-yellow-400 to-yellow-300 flex-shrink-0" /> */}
                                 <div>
                                     <div className="text-xs font-medium">Mid (medium)</div>
                                     <div className="text-[10px] text-muted-foreground leading-tight">
@@ -107,7 +104,6 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                                 </div>
                             </div>
                             <div className="flex items-start gap-2">
-                                {/* <div className="w-7 h-7 rounded bg-gradient-to-br from-green-400 to-green-300 flex-shrink-0" /> */}
                                 <div>
                                     <div className="text-xs font-medium">Late (low)</div>
                                     <div className="text-[10px] text-muted-foreground leading-tight">
@@ -116,7 +112,6 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                                 </div>
                             </div>
                             <div className="flex items-start gap-2">
-                                {/* <div className="w-7 h-7 rounded bg-gradient-to-br from-blue-400 to-blue-300 flex-shrink-0" /> */}
                                 <div>
                                     <div className="text-xs font-medium">Very Late (very low)</div>
                                     <div className="text-[10px] text-muted-foreground leading-tight">
@@ -125,7 +120,7 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
 
 

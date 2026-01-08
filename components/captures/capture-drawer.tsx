@@ -112,6 +112,7 @@ export function CapturesDrawer({ open, onOpenChange }: CapturesDrawerProps) {
                                             capture={mostRecentCapture}
                                             onPreview={handlePreview}
                                             // onEvaluate={handleEvaluate}
+                                            onSelect={(id) => setActiveCapture(id)}
                                             onDelete={removeCapture}
                                             // onUpdateName={handleUpdateName}
                                             variant="large"
@@ -178,6 +179,7 @@ export function CapturesDrawer({ open, onOpenChange }: CapturesDrawerProps) {
                                                             capture={capture}
                                                             onPreview={handlePreview}
                                                             // onEvaluate={handleEvaluate}
+                                                            onSelect={(id) => setActiveCapture(id)}
                                                             onDelete={removeCapture}
                                                             // onUpdateName={handleUpdateName}
                                                             variant="small"

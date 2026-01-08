@@ -8,11 +8,13 @@ import { CaptureActions } from "./capture-actions"
 import { DeleteAction } from "./delete-action"
 import { CaptureThumbnail } from "./capture-thumbnail"
 import { CaptureItem } from "@/store/capture-store"
+import { SelectAction } from "./select-action"
 
 interface CaptureCardProps {
     capture: CaptureItem
     onPreview: (capture: CaptureItem) => void
     onDelete: (id: string) => void
+    onSelect: (id: string) => void
     variant?: "large" | "small"
 }
 
@@ -20,6 +22,7 @@ export function CaptureCard({
     capture,
     onPreview,
     onDelete,
+    onSelect,
     variant = "small",
 }: CaptureCardProps) {
     const [isHovered, setIsHovered] = useState(false)
@@ -38,7 +41,11 @@ export function CaptureCard({
             onMouseLeave={() => setIsHovered(false)}
         >
             <CaptureThumbnail imageUrl={capture.image} alt={capture.name}>
-                <DeleteAction isVisible={isHovered} onDelete={() => onDelete(capture.id)} />
+                {/* <DeleteAction isVisible={isHovered} onDelete={() => onDelete(capture.id)} /> */}
+                <SelectAction
+                    isVisible={isHovered}
+                    onSelect={() => onSelect(capture.id)}
+                />
             </CaptureThumbnail>
 
             <div className={isLarge ? "p-4" : "p-3"}>

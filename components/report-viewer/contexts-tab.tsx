@@ -42,11 +42,10 @@ export function ContextsTab({ contextPerformanceData, bestContextName }: Context
                     </CardTitle>
                     <CardDescription>
                         Your content tested across 10 different shopper, e-commerce, and social contexts with AI-predicted
-                        performance metrics
-                        We simulate how people encounter your creative in different 10 real-world environments — from quick-glance billboards to purchase-ready e-commerce — to show where it fits best and where it may struggle.
+                        performance metrics to show where it fits best and where it may struggle.
                     </CardDescription>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-4">
                     <Tabs defaultValue="retail" className="w-full">
                         <TabsList className="grid w-full grid-cols-3">

@@ -385,7 +385,7 @@ export function ReportDrawer() {
 
 
                                                     <SheetHeader className="px-0 pt-0">
-                                                        <SheetTitle className="text-balance">Report Title</SheetTitle>
+                                                        <SheetTitle className="text-balance">Bose Focus On Campaign</SheetTitle>
                                                         <SheetDescription>
                                                             Report generated: {reportDate} at {reportTime}
                                                         </SheetDescription>
@@ -470,7 +470,7 @@ export function ReportDrawer() {
                                                             <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
                                                             <TabsTrigger value="contexts">Contexts</TabsTrigger>
                                                             {/* <TabsTrigger value="readability">Readability</TabsTrigger> */}
-                                                            <TabsTrigger value="content-interpretation">Content Interpretation</TabsTrigger>
+                                                            <TabsTrigger value="score-drivers">Score Drivers</TabsTrigger>
                                                         </TabsList>
 
                                                         {/* ------------------------------------ */}
@@ -538,7 +538,7 @@ export function ReportDrawer() {
                                         </TabsContent> */}
 
 
-                                                        <TabsContent value="content-interpretation">
+                                                        <TabsContent value="score-drivers">
                                                             <ContentInterpretationTab />
                                                         </TabsContent>
                                                     </Tabs>
