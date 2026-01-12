@@ -88,13 +88,19 @@ export const useCaptureStore = create<CaptureStore>()(
             updateCaptureName: (id, name) => {
                 const trimmed = name.trim()
                 if (!trimmed) return
-              
-                set({
-                  captures: get().captures.map((c) =>
-                    c.id === id ? { ...c, name: trimmed } : c
-                  ),
+
+                set((state) => {
+                    const current = state.captures.find((c) => c.id === id)
+                    if (!current || current.name === trimmed) return state
+
+                    return {
+                        captures: state.captures.map((c) =>
+                            c.id === id ? { ...c, name: trimmed } : c
+                        ),
+                    }
                 })
-              },              
+            },
+
 
             // ---- Draft flow ----
             setDraftCapture: (captureData) => {

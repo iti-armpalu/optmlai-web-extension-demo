@@ -249,7 +249,7 @@ export function ReportDrawer() {
 
         const t = setTimeout(() => {
             setIsGenerating(false);
-        }, 1000); // 3s fake generation
+        }, 8000); // 8s fake generation
 
         return () => clearTimeout(t);
     }, [report?.id]);
@@ -329,7 +329,7 @@ export function ReportDrawer() {
                                                 {/* -------------------------------- */}
                                                 {/* TOP MESSAGE ABOVE SKELETON      */}
                                                 {/* -------------------------------- */}
-                                                <div className="rounded-md border bg-muted/40 p-4 text-sm">
+                                                <div className="border bg-muted/40 p-4 text-sm">
                                                     <p className="font-medium">Generating full report…</p>
                                                     <p className="text-muted-foreground text-xs mt-1">
                                                         You can start chatting while the analysis loads.

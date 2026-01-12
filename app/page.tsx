@@ -26,7 +26,6 @@ export default function Home() {
               alt="Bose advertising"
               width={600}
               height={800}
-              className="rounded-lg"
             />
           </div>
         </div>

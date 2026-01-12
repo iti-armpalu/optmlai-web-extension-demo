@@ -2,7 +2,7 @@
 
 import { FloatingToggle } from "@/components/floating-toggle"
 import { ReportDrawer } from "@/components/report-viewer/report-drawer"
-import { CapturesDrawer } from "@/components/captures/capture-drawer"
+import { CapturesDrawer } from "@/components/captures/capture-drawer/capture-drawer"
 import { useUIStore } from "@/store/ui-store"
 
 export function RootContent({ children }: { children: React.ReactNode }) {

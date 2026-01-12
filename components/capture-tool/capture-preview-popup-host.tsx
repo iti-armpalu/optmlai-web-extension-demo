@@ -1,7 +1,7 @@
  // components/capture-tool/capture-preview-popup-host.tsx
 "use client"
 
-import { CapturePreview } from "@/components/capture-tool/capture-preview"
+import { CapturePreview } from "@/components/captures/capture-preview/capture-preview"
 import { useCaptureStore } from "@/store/capture-store"
 import { useUIStore } from "@/store/ui-store"
 
