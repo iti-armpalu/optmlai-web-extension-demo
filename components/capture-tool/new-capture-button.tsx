@@ -1,22 +1,36 @@
 "use client"
 
-import { CirclePlus, FolderOpen, Monitor, MousePointerClick, Plus, ScanLine, SquareDashedMousePointer, Upload } from "lucide-react"
+import {
+  FolderOpen,
+  MousePointerClick,
+  Plus,
+  ScanLine,
+  SquareDashedMousePointer,
+  Upload,
+} from "lucide-react"
 import { Button } from "../ui/button"
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar"
-import { useState } from "react"
 import { useSidebarCollapsed } from "@/hooks/use-sidebar-collapsed"
 import { useUIStore } from "@/store/ui-store"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu"
 import { useCaptureStore } from "@/store/capture-store"
+import { useAuth } from "@/contexts/auth-context"
 
 export function NewCaptureButton() {
-  const [isOpen, setIsOpen] = useState(false)
   const isCollapsed = useSidebarCollapsed()
+
+  const { requireAuth } = useAuth() // ✅ add this
 
   // Global UI actions
   const { startCapture, openDrawer } = useUIStore()
 
   const handleUpload = () => {
+    if (!requireAuth()) return // ✅ gate
+
     const input = document.createElement("input")
     input.type = "file"
     input.accept = "image/*"
@@ -32,48 +46,54 @@ export function NewCaptureButton() {
         reader.readAsDataURL(file)
       })
 
-      const { width, height } = await new Promise<{ width: number; height: number }>((resolve, reject) => {
-        const img = new Image()
-        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
-        img.onerror = () => reject(new Error("Failed to load uploaded image"))
-        img.src = imageData
-      })
+      const { width, height } = await new Promise<{ width: number; height: number }>(
+        (resolve, reject) => {
+          const img = new Image()
+          img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+          img.onerror = () => reject(new Error("Failed to load uploaded image"))
+          img.src = imageData
+        }
+      )
 
-      // ✅ DRAFT (not saved yet)
       useCaptureStore.getState().setDraftCapture({
         image: imageData,
         source: "upload",
         metadata: { width, height },
       })
 
-      // ✅ show preview popup
       useUIStore.getState().openCapturePreview()
     }
 
     input.click()
   }
 
-
-
   const handleSelect = () => {
+    if (!requireAuth()) return // ✅ gate
     console.log("Opening select")
   }
 
   const handleFromCaptures = () => {
+    if (!requireAuth()) return // ✅ gate
     openDrawer("captures")
+  }
+
+  const handleStartCapture = () => {
+    if (!requireAuth()) return // ✅ gate
+    startCapture()
   }
 
   if (!isCollapsed) {
     return (
-
       <div className="py-1.5">
-        <div className="mb-2 px-2 text-xs font-medium text-sidebar-foreground/70">Start New Capture</div>
-        <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-2 grid grid-cols-2 gap-2 animate-in fade-in-0 zoom-in-95">
+        <div className="mb-2 px-2 text-xs font-medium text-sidebar-foreground/70">
+          Start New Capture
+        </div>
 
+        <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-2 grid grid-cols-2 gap-2 animate-in fade-in-0 zoom-in-95">
           <Button
             variant="ghost"
             className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-            onClick={startCapture}
+            onClick={handleStartCapture}
           >
             <SquareDashedMousePointer className="h-5 w-5 text-primary" />
             <div className="text-center">
@@ -106,8 +126,6 @@ export function NewCaptureButton() {
             </div>
           </Button>
 
-
-
           <Button
             variant="ghost"
             className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
@@ -119,9 +137,6 @@ export function NewCaptureButton() {
               <div className="text-[10px] text-muted-foreground">Use existing</div>
             </div>
           </Button>
-
-
-
         </div>
       </div>
     )
@@ -134,8 +149,9 @@ export function NewCaptureButton() {
           <Plus className="size-4" />
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className="min-w-48 rounded-lg" side="left" align="start" sideOffset={4}>
-        <DropdownMenuItem onClick={startCapture} className="cursor-pointer py-2.5">
+        <DropdownMenuItem onClick={handleStartCapture} className="cursor-pointer py-2.5">
           <ScanLine className="mr-2 size-4" />
           <div className="flex flex-col gap-0.5">
             <span className="font-medium text-sm">Capture Area</span>

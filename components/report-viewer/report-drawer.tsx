@@ -24,7 +24,7 @@ import {
     TabsTrigger,
     TabsContent,
 } from "@/components/ui/tabs"
-import { CheckCircle2, Download, ExternalLink, Flame, Info, Share2 } from "lucide-react"
+import { CheckCircle2, Download, ExternalLink, Flame, Info, Plus, Share2, X } from "lucide-react"
 import { Skeleton } from "../ui/skeleton"
 import { ContentInterpretationTab } from "./content-interpretation"
 import { Button } from "../ui/button"
@@ -32,6 +32,7 @@ import { Badge } from "../ui/badge"
 import { HeatmapTab } from "./heatmap-tab"
 import { OverviewTab } from "./overview-tab"
 import { ContextsTab } from "./contexts-tab"
+import { Input } from "../ui/input"
 
 
 const contextPerformanceData = {
@@ -230,6 +231,10 @@ export function ReportDrawer() {
 
     const [isGenerating, setIsGenerating] = useState(true);
 
+    const [tags, setTags] = useState<string[]>(["Insurance", "Children's Coverage", "Life Insurance", "Q1 2025"])
+    const [newTag, setNewTag] = useState("")
+    const [isAddingTag, setIsAddingTag] = useState(false)
+
     const reportDate = new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -287,245 +292,308 @@ export function ReportDrawer() {
         return null
     }
 
+    const handleAddTag = () => {
+        if (newTag.trim() && !tags.includes(newTag.trim())) {
+            setTags([...tags, newTag.trim()])
+            setNewTag("")
+            setIsAddingTag(false)
+        }
+    }
+
+    const handleRemoveTag = (tagToRemove: string) => {
+        setTags(tags.filter((tag) => tag !== tagToRemove))
+    }
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            handleAddTag()
+        } else if (e.key === "Escape") {
+            setIsAddingTag(false)
+            setNewTag("")
+        }
+    }
+
 
 
     return (
         <Sheet open={!!activeReportId} onOpenChange={() => setActiveReport(null)}>
             {/* <div className="w-full max-w-5xl rounded-3xl backdrop-blur-2xl bg-white/20 shadow-2xl border border-white/30 p-12"> */}
-                <SheetContent
-                    side="right"
-                    className="p-0 border-l overflow-hidden"
-                    style={{
-                        width: drawerWidth,
-                        maxWidth: "100vw",
-                    }}
-                >
+            <SheetContent
+                side="right"
+                className="p-0 border-l overflow-hidden"
+                style={{
+                    width: drawerWidth,
+                    maxWidth: "100vw",
+                }}
+            >
 
 
-                    {/* LEFT EDGE DRAG HANDLE (VISIBLE) */}
+                {/* LEFT EDGE DRAG HANDLE (VISIBLE) */}
+                <div
+                    onMouseDown={beginResize}
+                    className="absolute left-0 top-0 h-full w-[12px] flex items-center justify-center cursor-col-resize z-50 group">
                     <div
-                        onMouseDown={beginResize}
-                        className="absolute left-0 top-0 h-full w-[12px] flex items-center justify-center cursor-col-resize z-50 group">
-                        <div
-                            className="h-14 w-[3px] rounded-full bg-muted-foreground/40 group-hover:bg-muted-foreground/70 transition" />
-                    </div>
+                        className="h-14 w-[3px] rounded-full bg-muted-foreground/40 group-hover:bg-muted-foreground/70 transition" />
+                </div>
 
-                    {/* <FullPageButton /> */}
+                {/* <FullPageButton /> */}
 
-                    {/* MAIN AREA — MUST FILL HEIGHT */}
-                    <div className="h-full flex w-full">
-                        {/* INTERNAL RESIZE AREA */}
-                        {report && (
-                            <ResizablePanelGroup
-                                direction="horizontal"
-                                className="h-full w-full"
-                            >
-                                {/* REPORT PANEL */}
-                                <ResizablePanel defaultSize={70} minSize={40} className="min-w-0">
-                                    <div className="h-full overflow-y-auto">
-                                        {isGenerating ? (
-                                            <div className="space-y-10">
+                {/* MAIN AREA — MUST FILL HEIGHT */}
+                <div className="h-full flex w-full">
+                    {/* INTERNAL RESIZE AREA */}
+                    {report && (
+                        <ResizablePanelGroup
+                            direction="horizontal"
+                            className="h-full w-full"
+                        >
+                            {/* REPORT PANEL */}
+                            <ResizablePanel defaultSize={70} minSize={40} className="min-w-0">
+                                <div className="h-full overflow-y-auto">
+                                    {isGenerating ? (
+                                        <div className="space-y-10">
 
-                                                {/* -------------------------------- */}
-                                                {/* TOP MESSAGE ABOVE SKELETON      */}
-                                                {/* -------------------------------- */}
-                                                <div className="border bg-muted/40 p-4 text-sm">
-                                                    <p className="font-medium">Generating full report…</p>
-                                                    <p className="text-muted-foreground text-xs mt-1">
-                                                        You can start chatting while the analysis loads.
-                                                    </p>
-                                                </div>
-                                                {/* -------------------------------- */}
-                                                {/* ANIMATED SKELETON LOADER         */}
-                                                {/* -------------------------------- */}
-                                                <div className="space-y-10 animate-pulse">
-
-                                                    {/* Title */}
-                                                    <Skeleton className="h-7 w-64 skeleton-shimmer" />
-                                                    <Skeleton className="h-4 w-40 skeleton-shimmer" />
-
-                                                    {/* Heatmap Section */}
-                                                    <div className="space-y-4">
-                                                        <Skeleton className="h-5 w-24 skeleton-shimmer" />
-                                                        <Skeleton className="h-[300px] w-full rounded-lg skeleton-shimmer" />
-                                                    </div>
-
-                                                    {/* Tabs header */}
-                                                    <Skeleton className="h-10 w-full rounded-md skeleton-shimmer" />
-
-                                                    {/* Content blocks */}
-                                                    <div className="space-y-8">
-                                                        <div className="space-y-2">
-                                                            <Skeleton className="h-5 w-40 skeleton-shimmer" />
-                                                            <Skeleton className="h-4 w-full skeleton-shimmer" />
-                                                            <Skeleton className="h-4 w-[85%] skeleton-shimmer" />
-                                                        </div>
-
-                                                        <div className="space-y-2">
-                                                            <Skeleton className="h-5 w-36 skeleton-shimmer" />
-                                                            <Skeleton className="h-4 w-full skeleton-shimmer" />
-                                                            <Skeleton className="h-4 w-[75%] skeleton-shimmer" />
-                                                        </div>
-
-                                                        <div className="space-y-2">
-                                                            <Skeleton className="h-5 w-48 skeleton-shimmer" />
-                                                            <Skeleton className="h-4 w-full skeleton-shimmer" />
-                                                            <Skeleton className="h-4 w-[65%] skeleton-shimmer" />
-                                                        </div>
-                                                    </div>
-
-                                                </div>
+                                            {/* -------------------------------- */}
+                                            {/* TOP MESSAGE ABOVE SKELETON      */}
+                                            {/* -------------------------------- */}
+                                            <div className="border bg-muted/40 p-4 text-sm">
+                                                <p className="font-medium">Generating full report…</p>
+                                                <p className="text-muted-foreground text-xs mt-1">
+                                                    You can start chatting while the analysis loads.
+                                                </p>
                                             </div>
-                                        ) : (
-                                            // -----------------------------------------------
-                                            // ACTUAL REPORT CONTENT (your original code)
-                                            // -----------------------------------------------
-                                            <>
-                                                <div className="border-b border-border p-8">
+                                            {/* -------------------------------- */}
+                                            {/* ANIMATED SKELETON LOADER         */}
+                                            {/* -------------------------------- */}
+                                            <div className="space-y-10 animate-pulse">
+
+                                                {/* Title */}
+                                                <Skeleton className="h-7 w-64 skeleton-shimmer" />
+                                                <Skeleton className="h-4 w-40 skeleton-shimmer" />
+
+                                                {/* Heatmap Section */}
+                                                <div className="space-y-4">
+                                                    <Skeleton className="h-5 w-24 skeleton-shimmer" />
+                                                    <Skeleton className="h-[300px] w-full rounded-lg skeleton-shimmer" />
+                                                </div>
+
+                                                {/* Tabs header */}
+                                                <Skeleton className="h-10 w-full rounded-md skeleton-shimmer" />
+
+                                                {/* Content blocks */}
+                                                <div className="space-y-8">
+                                                    <div className="space-y-2">
+                                                        <Skeleton className="h-5 w-40 skeleton-shimmer" />
+                                                        <Skeleton className="h-4 w-full skeleton-shimmer" />
+                                                        <Skeleton className="h-4 w-[85%] skeleton-shimmer" />
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <Skeleton className="h-5 w-36 skeleton-shimmer" />
+                                                        <Skeleton className="h-4 w-full skeleton-shimmer" />
+                                                        <Skeleton className="h-4 w-[75%] skeleton-shimmer" />
+                                                    </div>
+
+                                                    <div className="space-y-2">
+                                                        <Skeleton className="h-5 w-48 skeleton-shimmer" />
+                                                        <Skeleton className="h-4 w-full skeleton-shimmer" />
+                                                        <Skeleton className="h-4 w-[65%] skeleton-shimmer" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        // -----------------------------------------------
+                                        // ACTUAL REPORT CONTENT (your original code)
+                                        // -----------------------------------------------
+                                        <>
+                                            <div className="border-b border-border p-8">
 
 
-                                                    <SheetHeader className="px-0 pt-0">
+                                                <SheetHeader className="px-0 pt-0">
+                                                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+
                                                         <SheetTitle className="text-balance">Bose Focus On Campaign</SheetTitle>
+                                                        <div className="flex items-center gap-2 flex-wrap lg:flex-shrink-0">
+                                                            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+                                                                <ExternalLink className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+                                                                <Share2 className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+                                                                <Download className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="flex flex-col lg:flex-row items-center gap-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="gap-1.5 py-1 px-2.5 text-xs font-normal border-green-600/10 bg-green-50/50 text-green-600 dark:bg-green-950/30 dark:text-green-500"
+                                                            >
+                                                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                                                Analysis complete
+                                                            </Badge>
+                                                        </div>
                                                         <SheetDescription>
                                                             Report generated: {reportDate} at {reportTime}
                                                         </SheetDescription>
-                                                    </SheetHeader>
-
-                                                    <div className="space-y-6">
-                                                        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                                                            <div className="flex flex-col gap-2">
-                                                                <div className="flex items-center gap-2">
-                                                                    <Badge
-                                                                        variant="outline"
-                                                                        className="gap-1.5 py-1 px-2.5 text-xs font-normal border-green-600/10 bg-green-50/50 text-green-600 dark:bg-green-950/30 dark:text-green-500"
-                                                                    >
-                                                                        <CheckCircle2 className="h-3.5 w-3.5" />
-                                                                        Analysis complete
-                                                                    </Badge>
-                                                                </div>
-                                                                <div className="flex flex-wrap items-center gap-1.5">
-                                                                    <Badge variant="secondary" className="text-xs font-normal py-0.5 px-2">
-                                                                        Heatmap
-                                                                    </Badge>
-                                                                    <span className="text-muted-foreground">•</span>
-                                                                    <Badge variant="secondary" className="text-xs font-normal py-0.5 px-2">
-                                                                        Cognitive analysis
-                                                                    </Badge>
-                                                                    <span className="text-muted-foreground">•</span>
-                                                                    <Badge variant="secondary" className="text-xs font-normal py-0.5 px-2">
-                                                                        Multi-context predictions
-                                                                    </Badge>
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="flex items-center gap-2 flex-wrap lg:flex-shrink-0">
-                                                                <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                                                                    <ExternalLink className="h-4 w-4" />
-                                                                    {/* <span className="hidden sm:inline">Open Full-View Report</span> */}
-                                                                    {/* <span className="sm:hidden">Open Full</span> */}
-                                                                </Button>
-                                                                <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                                                                    <Share2 className="h-4 w-4" />
-                                                                    {/* <span className="hidden sm:inline">Share</span> */}
-                                                                </Button>
-                                                                <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                                                                    <Download className="h-4 w-4" />
-                                                                </Button>
-                                                                {/* <DropdownMenu>
-                                                            <DropdownMenuTrigger asChild>
-                                                                <Button variant="outline" size="sm">
-                                                                    <MoreHorizontal className="h-4 w-4" />
-                                                                </Button>
-                                                            </DropdownMenuTrigger>
-                                                            <DropdownMenuContent align="end">
-                                                                <DropdownMenuItem className="gap-2">
-                                                                    <Download className="h-4 w-4" />
-                                                                    Download PDF
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem className="gap-2">
-                                                                    <Download className="h-4 w-4" />
-                                                                    Export CSV
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem className="gap-2">
-                                                                    <Share2 className="h-4 w-4" />
-                                                                    Copy Link
-                                                                </DropdownMenuItem>
-                                                            </DropdownMenuContent>
-                                                        </DropdownMenu> */}
-                                                            </div>
-                                                        </div>
                                                     </div>
 
+                                                </SheetHeader>
+
+                                                <div className="space-y-6">
+                                                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                                                        {/* <div className="flex flex-col gap-2"> */}
+
+                                                        {/* <div className="flex flex-wrap items-center gap-1.5">
+                                                                <Badge variant="secondary" className="text-xs font-normal py-0.5 px-2">
+                                                                    Heatmap
+                                                                </Badge>
+                                                                <span className="text-muted-foreground">•</span>
+                                                                <Badge variant="secondary" className="text-xs font-normal py-0.5 px-2">
+                                                                    Cognitive analysis
+                                                                </Badge>
+                                                                <span className="text-muted-foreground">•</span>
+                                                                <Badge variant="secondary" className="text-xs font-normal py-0.5 px-2">
+                                                                    Multi-context predictions
+                                                                </Badge>
+                                                            </div> */}
+                                                        {/* </div> */}
+
+                                                        {/* <div className="flex items-center gap-2 flex-wrap lg:flex-shrink-0">
+                                                            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+                                                                <ExternalLink className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+                                                                <Share2 className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+                                                                <Download className="h-4 w-4" />
+                                                            </Button>
+                                                        </div> */}
+                                                    </div>
                                                 </div>
 
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <span className="text-sm font-medium text-muted-foreground">Report Tags:</span>
+                                                    {tags.map((tag) => (
+                                                        <Badge key={tag} variant="secondary" className="gap-1 pr-1">
+                                                            {tag}
+                                                            <button
+                                                                onClick={() => handleRemoveTag(tag)}
+                                                                className="ml-1 hover:bg-muted rounded-full p-0.5 transition-colors"
+                                                                aria-label={`Remove ${tag} tag`}
+                                                            >
+                                                                <X className="h-3 w-3" />
+                                                            </button>
+                                                        </Badge>
+                                                    ))}
+                                                    {isAddingTag ? (
+                                                        <div className="flex items-center gap-1">
+                                                            <Input
+                                                                type="text"
+                                                                value={newTag}
+                                                                onChange={(e) => setNewTag(e.target.value)}
+                                                                onKeyDown={handleKeyPress}
+                                                                onBlur={() => {
+                                                                    if (!newTag.trim()) {
+                                                                        setIsAddingTag(false)
+                                                                    }
+                                                                }}
+                                                                placeholder="Enter tag name"
+                                                                className="h-7 w-32 text-sm"
+                                                                autoFocus
+                                                            />
+                                                            <Button size="sm" variant="ghost" className="h-7 w-7 p-0" onClick={handleAddTag}>
+                                                                <Plus className="h-3 w-3" />
+                                                            </Button>
+                                                        </div>
+                                                    ) : (
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            className="h-7 gap-1 text-xs bg-transparent"
+                                                            onClick={() => setIsAddingTag(true)}
+                                                        >
+                                                            <Plus className="h-3 w-3" />
+                                                            Add Tag
+                                                        </Button>
+                                                    )}
+                                                </div>
+
+                                            </div>
 
 
 
 
-                                                <div className="container mx-auto p-8">
 
-                                                    <Tabs defaultValue="overview" className="w-full">
-                                                        <TabsList className="grid w-full grid-cols-4 mb-8">
-                                                            <TabsTrigger value="overview">Overview</TabsTrigger>
-                                                            <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
-                                                            <TabsTrigger value="contexts">Contexts</TabsTrigger>
-                                                            {/* <TabsTrigger value="readability">Readability</TabsTrigger> */}
-                                                            <TabsTrigger value="score-drivers">Score Drivers</TabsTrigger>
-                                                        </TabsList>
+                                            <div className="container mx-auto p-8">
 
-                                                        {/* ------------------------------------ */}
-                                                        {/* OVERVIEW TAB */}
-                                                        {/* ------------------------------------ */}
-                                                        <TabsContent value="overview" className="space-y-6">
-                                                            <OverviewTab bestContext={bestContext} />
-                                                        </TabsContent>
+                                                <Tabs defaultValue="overview" className="w-full">
+                                                    <TabsList className="grid w-full grid-cols-4 mb-8">
+                                                        <TabsTrigger value="overview">Overview</TabsTrigger>
+                                                        <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
+                                                        <TabsTrigger value="contexts">Contexts</TabsTrigger>
+                                                        {/* <TabsTrigger value="readability">Readability</TabsTrigger> */}
+                                                        <TabsTrigger value="score-drivers">Score Drivers</TabsTrigger>
+                                                    </TabsList>
 
-                                                        {/* ------------------------------------ */}
-                                                        {/* HEATMAP TAB */}
-                                                        {/* ------------------------------------ */}
-                                                        <TabsContent value="heatmap" className="space-y-6">
-                                                            <HeatmapTab report={report} />
-                                                        </TabsContent>
+                                                    {/* ------------------------------------ */}
+                                                    {/* OVERVIEW TAB */}
+                                                    {/* ------------------------------------ */}
+                                                    <TabsContent value="overview" className="space-y-6">
+                                                        <OverviewTab bestContext={bestContext} />
+                                                    </TabsContent>
 
-                                                        {/* ------------------------------------ */}
-                                                        {/* DESIGN RULES TAB */}
-                                                        {/* ------------------------------------ */}
-                                                        <TabsContent value="contexts" className="space-y-6">
-                                                            <ContextsTab contextPerformanceData={contextPerformanceData} bestContextName={bestContext.name} />
-                                                        </TabsContent>
+                                                    {/* ------------------------------------ */}
+                                                    {/* HEATMAP TAB */}
+                                                    {/* ------------------------------------ */}
+                                                    <TabsContent value="heatmap" className="space-y-6">
+                                                        <HeatmapTab report={report} />
+                                                    </TabsContent>
 
-                                                        {/* ------------------------------------ */}
-                                                        {/* READABILITY TAB */}
-                                                        {/* ------------------------------------ */}
-                                                        <TabsContent value="readability" className="space-y-6">
-                                                            <h2 className="text-lg font-semibold mb-4">Readability Analysis</h2>
+                                                    {/* ------------------------------------ */}
+                                                    {/* DESIGN RULES TAB */}
+                                                    {/* ------------------------------------ */}
+                                                    <TabsContent value="contexts" className="space-y-6">
+                                                        <ContextsTab contextPerformanceData={contextPerformanceData} bestContextName={bestContext.name} />
+                                                    </TabsContent>
 
-                                                            <div className="space-y-3">
-                                                                <p className="text-sm">
-                                                                    <span className="font-semibold">Estimated Grade Level: </span>
-                                                                    {report.report.readability.estimatedGrade}
-                                                                </p>
+                                                    {/* ------------------------------------ */}
+                                                    {/* READABILITY TAB */}
+                                                    {/* ------------------------------------ */}
+                                                    <TabsContent value="readability" className="space-y-6">
+                                                        <h2 className="text-lg font-semibold mb-4">Readability Analysis</h2>
 
-                                                                <p className="text-sm">
-                                                                    <span className="font-semibold">Density Score: </span>
-                                                                    {(report.report.readability.densityScore * 100).toFixed(0)}%
-                                                                </p>
-                                                            </div>
+                                                        <div className="space-y-3">
+                                                            <p className="text-sm">
+                                                                <span className="font-semibold">Estimated Grade Level: </span>
+                                                                {report.report.readability.estimatedGrade}
+                                                            </p>
 
-                                                            <section>
-                                                                <h3 className="text-sm font-semibold mb-2">Clarity Notes</h3>
-                                                                <ul className="list-disc pl-4 space-y-1 text-sm">
-                                                                    {report.report.readability.clarityNotes.map((note, i) => (
-                                                                        <li key={i}>{note}</li>
-                                                                    ))}
-                                                                </ul>
-                                                            </section>
-                                                        </TabsContent>
+                                                            <p className="text-sm">
+                                                                <span className="font-semibold">Density Score: </span>
+                                                                {(report.report.readability.densityScore * 100).toFixed(0)}%
+                                                            </p>
+                                                        </div>
 
-                                                        {/* ------------------------------------ */}
-                                                        {/* INSIGHTS TAB */}
-                                                        {/* ------------------------------------ */}
-                                                        {/* <TabsContent value="insights" className="space-y-6">
+                                                        <section>
+                                                            <h3 className="text-sm font-semibold mb-2">Clarity Notes</h3>
+                                                            <ul className="list-disc pl-4 space-y-1 text-sm">
+                                                                {report.report.readability.clarityNotes.map((note, i) => (
+                                                                    <li key={i}>{note}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </section>
+                                                    </TabsContent>
+
+                                                    {/* ------------------------------------ */}
+                                                    {/* INSIGHTS TAB */}
+                                                    {/* ------------------------------------ */}
+                                                    {/* <TabsContent value="insights" className="space-y-6">
                                             <h2 className="text-lg font-semibold mb-4">AI Insights</h2>
 
                                             <ul className="space-y-3 text-sm">
@@ -538,26 +606,26 @@ export function ReportDrawer() {
                                         </TabsContent> */}
 
 
-                                                        <TabsContent value="score-drivers">
-                                                            <ContentInterpretationTab />
-                                                        </TabsContent>
-                                                    </Tabs>
-                                                </div>
-                                            </>)}
+                                                    <TabsContent value="score-drivers">
+                                                        <ContentInterpretationTab />
+                                                    </TabsContent>
+                                                </Tabs>
+                                            </div>
+                                        </>)}
 
-                                    </div>
-                                </ResizablePanel>
+                                </div>
+                            </ResizablePanel>
 
-                                <ResizableHandle withHandle />
+                            <ResizableHandle withHandle />
 
-                                {/* CHAT PANEL */}
-                                <ResizablePanel defaultSize={30} minSize={25} className="min-w-0">
-                                    <ReportChat report={report} />
-                                </ResizablePanel>
-                            </ResizablePanelGroup>
-                        )}
-                    </div>
-                </SheetContent>
+                            {/* CHAT PANEL */}
+                            <ResizablePanel defaultSize={30} minSize={25} className="min-w-0">
+                                <ReportChat report={report} />
+                            </ResizablePanel>
+                        </ResizablePanelGroup>
+                    )}
+                </div>
+            </SheetContent>
             {/* </div> */}
         </Sheet>
     )

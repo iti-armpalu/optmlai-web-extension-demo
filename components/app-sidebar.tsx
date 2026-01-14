@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useState } from "react"
 import {
   LayoutDashboard,
   FileImage,
@@ -25,6 +26,8 @@ import { NewCaptureButton } from "./capture-tool/new-capture-button"
 import { CompanyLogo } from "./company-logo"
 import { Button } from "./ui/button"
 import { ThemeToggle } from "./theme-toggle"
+import { AuthProvider } from "@/contexts/auth-context"
+import { RegisterDialog } from "./auth/register-dialog"
 
 // ----------------------------
 // SAMPLE NAV DATA
@@ -42,23 +45,12 @@ const data = {
   ],
   navMain: [
     {
-      title: "Captures",
+      title: "Ad Creatives",
       url: "#",
       icon: FileImage,
       items: [
         { title: "All Captures", url: "#" },
         { title: "Favorites", url: "#" },
-        { title: "Archived", url: "#" },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        { title: "General", url: "#" },
-        { title: "Team", url: "#" },
-        { title: "Integrations", url: "#" },
       ],
     },
   ],
@@ -71,11 +63,14 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   // const { state, toggleSidebar } = useSidebar()
   // const isCollapsed = state === "collapsed"
 
+  const [showAuthGateDialog, setShowAuthGateDialog] = useState(false)
+
   return (
-    <Sidebar collapsible="icon" {...props}>
-      {/* HEADER */}
-      <SidebarHeader>
-        {/* <div>
+    <AuthProvider onShowAuthGate={() => setShowAuthGateDialog(true)}>
+      <Sidebar collapsible="icon" {...props}>
+        {/* HEADER */}
+        <SidebarHeader>
+          {/* <div>
           <Button
             variant="ghost"
             size="icon"
@@ -86,23 +81,31 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
             <PanelLeftClose className="size-4" />
           </Button>
         </div> */}
-        <CompanyLogo />
-        <NewCaptureButton />
-      </SidebarHeader>
+          <CompanyLogo />
+          <NewCaptureButton />
+        </SidebarHeader>
 
-      {/* CONTENT */}
-      <SidebarContent>
-        <NavReports />
-        <NavMain items={data.navMain} />
-      </SidebarContent>
+        {/* CONTENT */}
+        <SidebarContent>
+          <NavReports />
+          <NavMain items={data.navMain} />
+        </SidebarContent>
 
-      {/* FOOTER */}
-      <SidebarFooter className="pb-14 gap-2">
-        <ThemeToggle />
-        <NavUser user={data.user} />
-      </SidebarFooter>
+        {/* FOOTER */}
+        <SidebarFooter className="pb-14 gap-2">
+          {/* <ThemeToggle /> */}
+          <NavUser user={data.user} />
+        </SidebarFooter>
 
-      <SidebarRail />
-    </Sidebar>
+        <SidebarRail />
+      </Sidebar>
+
+      <RegisterDialog
+        open={showAuthGateDialog}
+        onOpenChange={setShowAuthGateDialog}
+        onSuccess={() => setShowAuthGateDialog(false)}
+      />
+
+    </AuthProvider>
   )
 }

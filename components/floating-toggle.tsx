@@ -57,14 +57,6 @@ export function FloatingToggle() {
     return (
         <TooltipProvider>
 
-
-            {/* <CapturePreviewPopupHost onGenerate={handleCapture} /> */}
-
-            {/* PROCESSING */}
-            {/* {isProcessing && (
-                <ProcessingPopover isOpen={isProcessing} />
-            )} */}
-
             {/* AREA CAPTURE OVERLAY */}
             {isCapturing && (
                 <AreaCaptureOverlay
@@ -87,7 +79,7 @@ export function FloatingToggle() {
                 >
                     <div className="fixed top-0 right-0">
                         <div className="relative">
-                            <SidebarProvider defaultOpen={false}>
+                            <SidebarProvider defaultOpen={true}>
                                 <AppSidebar
                                     side="right"
                                     variant="floating"
@@ -159,7 +151,7 @@ export function FloatingToggle() {
                                     )
 
                                         : (
-                                            <span className="text-lg">S</span>
+                                            <span className="text-lg">O</span>
                                         )}
                                 <span className="sr-only">Toolbar</span>
                             </Button>

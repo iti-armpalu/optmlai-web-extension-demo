@@ -28,7 +28,6 @@ export const useReportStore = create<ReportStore>()(
 
       addReport: (report) =>
         set({
-          // reports: [...get().reports, report],
           reports: [report, ...get().reports],
           activeReportId: report.id,
         }),

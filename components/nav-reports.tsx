@@ -13,7 +13,7 @@ import {
 import { useReportStore } from "@/store/report-store"
 import { useUIStore } from "@/store/ui-store"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
-import { ChevronRightCircle, FileText } from "lucide-react"
+import { ChevronRight, FileText } from "lucide-react"
 import { useMemo } from "react"
 
 const data = {
@@ -44,7 +44,7 @@ export function NavReports() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      {/* <SidebarGroupLabel>Platform</SidebarGroupLabel> */}
       <SidebarMenu>
         {data.navMain.map((item) => (
           <Collapsible
@@ -58,7 +58,7 @@ export function NavReports() {
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
-                  <ChevronRightCircle className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
 
@@ -70,9 +70,6 @@ export function NavReports() {
                         <div className="flex items-center gap-2">
                           <div className="flex flex-col">
                             <span className="text-xs font-medium">{report.title}</span>
-                            <span className="text-[10px] text-muted-foreground">
-                              Channel · purpose
-                            </span>
                           </div>
                         </div>
                       </SidebarMenuSubButton>
