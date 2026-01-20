@@ -1,9 +1,9 @@
+// single responsibility: data
+
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import type { DummyReport } from "@/lib/generate-dummy-report"
+import type { DummyReport } from "@/lib/dummy-report-data"
 
-
-// TYPE
 export interface ReportItem {
   id: string
   title: string
@@ -14,29 +14,35 @@ export interface ReportItem {
 
 interface ReportStore {
   reports: ReportItem[]
-  activeReportId: string | null
-
   addReport: (report: ReportItem) => void
-  setActiveReport: (id: string | null) => void
+  removeReport: (id: string) => void
+  updateReport: (report: ReportItem) => void
+  getReportById: (id: string) => ReportItem | undefined
 }
 
 export const useReportStore = create<ReportStore>()(
   persist(
     (set, get) => ({
       reports: [],
-      activeReportId: null,
 
       addReport: (report) =>
         set({
-          reports: [report, ...get().reports],
-          activeReportId: report.id,
+          // de-dupe by id and keep newest first
+          reports: [report, ...get().reports.filter((r) => r.id !== report.id)],
         }),
 
-      setActiveReport: (id) => set({ activeReportId: id }),
-    }),
+      removeReport: (id) =>
+        set({
+          reports: get().reports.filter((r) => r.id !== id),
+        }),
 
-    {
-      name: "reports-store", // localStorage key
-    }
+      updateReport: (report) =>
+        set({
+          reports: get().reports.map((r) => (r.id === report.id ? report : r)),
+        }),
+
+      getReportById: (id) => get().reports.find((r) => r.id === id),
+    }),
+    { name: "reports-store" }
   )
 )

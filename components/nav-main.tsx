@@ -34,17 +34,11 @@ export function NavMain({
 }) {
   const { openDrawer } = useUIStore()
 
-  const handleClick = (group: string, item: string) => {
-    if (group === "Captures") {
-      if (item === "All Captures") openDrawer("captures")
-      if (item === "Favorites") openDrawer("favorites")
-      if (item === "Archived") openDrawer("archived")
-    }
-
-    if (group === "Settings") {
-      openDrawer("settings")
-    }
-  }
+  // const handleClick = (group: string, item: string) => {
+  //   if (group === "Captures") {
+  //     if (item === "All Captures") openDrawer("captures")
+  //   }
+  // }
 
   return (
     <SidebarGroup>
@@ -74,7 +68,7 @@ export function NavMain({
                       <SidebarMenuSubButton
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleClick(item.title, subItem.title)
+                          // handleClick(item.title, subItem.title)
                         }}
                       >
                         <span>{subItem.title}</span>

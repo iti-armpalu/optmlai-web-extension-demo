@@ -11,16 +11,14 @@ interface ProcessingPopoverProps {
 }
 
 const GENERATION_STEPS = [
-  { label: 'Analyzing content', duration: 1500 },
-  { label: 'Identifying key elements', duration: 1800 },
-  { label: 'Generating insights', duration: 2000 },
-  { label: 'Creating recommendations', duration: 1700 },
-  { label: 'Finalizing report', duration: 1000 },
+  { label: 'Uploading image', duration: 1500 },
+  { label: 'Analyzing visual structure', duration: 1800 },
+  { label: 'Identifying key elements', duration: 2000 },
 ]
 
 export function ProcessingPopover({
   isOpen,
-  message = 'Generating report...',
+  message = 'Extracting visual data for analysis',
 }: ProcessingPopoverProps) {
 
   const finishProcessing = useUIStore((s) => s.finishProcessing)
@@ -50,17 +48,17 @@ export function ProcessingPopover({
   }, [currentStep, isOpen])
 
   // When steps finish → close popover → open report drawer
-  useEffect(() => {
-    if (!isOpen) return
+  // useEffect(() => {
+  //   if (!isOpen) return
 
-    if (currentStep === GENERATION_STEPS.length) {
-      const timer = setTimeout(() => {
-        finishProcessing() // CLOSES popover + opens report drawer
-      }, 300)
+  //   if (currentStep === GENERATION_STEPS.length) {
+  //     const timer = setTimeout(() => {
+  //       finishProcessing() 
+  //     }, 300)
 
-      return () => clearTimeout(timer)
-    }
-  }, [currentStep, isOpen, finishProcessing])
+  //     return () => clearTimeout(timer)
+  //   }
+  // }, [currentStep, isOpen, finishProcessing])
 
   if (!isOpen) return null
 
@@ -72,7 +70,7 @@ export function ProcessingPopover({
           <div className="flex items-center gap-3">
             <Loader2 className="h-5 w-5 animate-spin text-primary flex-shrink-0" />
             <div className="flex flex-col">
-              <span className="text-sm font-medium">Working…</span>
+              <span className="text-sm font-medium">Processing image…</span>
               <span className="text-xs text-muted-foreground">{message}</span>
             </div>
           </div>

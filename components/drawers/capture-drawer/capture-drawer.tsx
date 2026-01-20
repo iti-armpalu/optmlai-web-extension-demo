@@ -5,7 +5,7 @@ import { CaptureItem, useCaptureStore } from "@/store/capture-store"
 import { useUIStore } from "@/store/ui-store"
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
-import { CaptureCard } from "../capture-card/capture-card"
+import { CaptureCard } from "../../captures/capture-card/capture-card"
 import { groupCapturesByTime } from "./time-grouping"
 import { EmptyState } from "./empty-state"
 

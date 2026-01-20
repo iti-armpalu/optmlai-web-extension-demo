@@ -4,24 +4,13 @@ import { cn } from "@/lib/utils"
 import {
   Building2,
   Package,
-  MessageCircle,
-  BookOpen,
   MousePointerClick,
-  Gem,
-  Heart,
-  Palette,
   Sparkles,
-  CheckCircle,
   Info,
-  ArrowRight,
-  Sparkle,
-  CheckCircle2,
-  InfoIcon,
   MessageSquare,
 } from "lucide-react"
-import { aiUnderstanding } from "./_data"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
+import { aiUnderstanding } from "../_data"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../../ui/card"
 
 const ObjectiveCard = ({
   icon: Icon,
@@ -73,41 +62,7 @@ const SectionCard = ({
   </Card>
 )
 
-const ConfidenceMeter = ({ value, label }: { value: number; label: string }) => (
-  <div className="space-y-1">
-    <div className="flex items-center justify-between text-xs">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="text-primary font-medium">{value}%</span>
-    </div>
-    <div className="h-2 bg-muted rounded-full overflow-hidden">
-      <div
-        className={cn(
-          "h-full rounded-full transition-all duration-500",
-          value >= 80 ? "bg-green-500" : value >= 60 ? "bg-primary" : "bg-accent",
-        )}
-        style={{ width: `${value}%` }}
-      />
-    </div>
-  </div>
-)
 
-const TagList = ({ tags, color = "primary" }: { tags: string[]; color?: string }) => (
-  <div className="flex flex-wrap gap-2">
-    {tags.map((tag) => (
-      <span
-        key={tag}
-        className={cn(
-          "px-2.5 py-1 rounded-md text-xs",
-          color === "primary" && "bg-purple-50 text-purple-500",
-          color === "accent" && "bg-accent/10 text-accent",
-          color === "success" && "bg-success/10 text-success",
-        )}
-      >
-        {tag}
-      </span>
-    ))}
-  </div>
-)
 
 const SignalCard = ({
   icon: Icon,
@@ -147,7 +102,7 @@ const SignalCard = ({
   </Card>
 )
 
-export function ContentInterpretationTab() {
+export function ScoreDriversTab() {
   const data = aiUnderstanding
 
   return (

@@ -54,7 +54,7 @@ export function RegisterDialog({ open, onOpenChange, onSuccess, onSwitchToLogin 
             <div className="flex size-10 items-center justify-center rounded-lg bg-primary">
               <Layers className="size-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold">OPTML</span>
+            <span className="text-2xl font-bold">OPTML.AI</span>
           </div>
           <DialogTitle className="text-center text-xl">Create Your Free Account</DialogTitle>
           <DialogDescription className="text-center">Get started with 3 free credits</DialogDescription>
@@ -145,14 +145,14 @@ export function RegisterDialog({ open, onOpenChange, onSuccess, onSwitchToLogin 
             </Button>
           </form>
 
-          {onSwitchToLogin && (
+          {/* {onSwitchToLogin && ( */}
             <div className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
               <Button variant="link" className="h-auto p-0 text-sm" onClick={onSwitchToLogin} type="button">
                 Sign in
               </Button>
             </div>
-          )}
+          {/* )} */}
 
           <div className="space-y-3">
             <div className="relative">

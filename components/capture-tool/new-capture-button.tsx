@@ -3,69 +3,100 @@
 import {
   FolderOpen,
   MousePointerClick,
-  Plus,
-  ScanLine,
   SquareDashedMousePointer,
   Upload,
 } from "lucide-react"
 import { Button } from "../ui/button"
-import { useSidebarCollapsed } from "@/hooks/use-sidebar-collapsed"
 import { useUIStore } from "@/store/ui-store"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu"
 import { useCaptureStore } from "@/store/capture-store"
 import { useAuth } from "@/contexts/auth-context"
+import { Card } from "../ui/card"
 
 export function NewCaptureButton() {
-  const isCollapsed = useSidebarCollapsed()
 
-  const { requireAuth } = useAuth() // ✅ add this
+  const actions = [
+    {
+        icon: SquareDashedMousePointer,
+        title: "Capture Area",
+        description: "Select region",
+    },
+    {
+        icon: Upload,
+        title: "Upload Image",
+        description: "From computer",
+    },
+    {
+        icon: MousePointerClick,
+        title: "Select",
+        description: "Choose element",
+    },
+    {
+        icon: FolderOpen,
+        title: "From Captures",
+        description: "Use existing",
+    },
+];
+
+
+
+  const { requireAuth } = useAuth()
 
   // Global UI actions
   const { startCapture, openDrawer } = useUIStore()
 
   const handleUpload = () => {
-    if (!requireAuth()) return // ✅ gate
-
+    console.log("[Upload] clicked")
+  
+    if (!requireAuth()) {
+      console.log("[Upload] blocked by requireAuth")
+      return
+    }
+  
     const input = document.createElement("input")
     input.type = "file"
     input.accept = "image/*"
-
+  
     input.onchange = async (e) => {
+      console.log("[Upload] onchange fired")
+  
       const file = (e.target as HTMLInputElement).files?.[0]
+      console.log("[Upload] file", file)
       if (!file) return
-
+  
       const imageData = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => resolve(reader.result as string)
         reader.onerror = () => reject(reader.error)
         reader.readAsDataURL(file)
       })
-
-      const { width, height } = await new Promise<{ width: number; height: number }>(
-        (resolve, reject) => {
-          const img = new Image()
-          img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
-          img.onerror = () => reject(new Error("Failed to load uploaded image"))
-          img.src = imageData
-        }
-      )
-
+  
+      console.log("[Upload] imageData length", imageData.length)
+  
+      const { width, height } = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+        const img = new Image()
+        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight })
+        img.onerror = () => reject(new Error("Failed to load uploaded image"))
+        img.src = imageData
+      })
+  
+      console.log("[Upload] dimensions", { width, height })
+  
       useCaptureStore.getState().setDraftCapture({
         image: imageData,
         source: "upload",
         metadata: { width, height },
       })
-
+  
+      console.log("[Upload] draft set", useCaptureStore.getState().draftCapture)
+  
       useUIStore.getState().openCapturePreview()
+  
+      console.log("[Upload] openCapturePreview called", useUIStore.getState().isCapturePreviewOpen)
     }
-
+  
     input.click()
   }
+  
 
   const handleSelect = () => {
     if (!requireAuth()) return // ✅ gate
@@ -74,7 +105,7 @@ export function NewCaptureButton() {
 
   const handleFromCaptures = () => {
     if (!requireAuth()) return // ✅ gate
-    openDrawer("captures")
+    // openDrawer("captures")
   }
 
   const handleStartCapture = () => {
@@ -82,107 +113,72 @@ export function NewCaptureButton() {
     startCapture()
   }
 
-  if (!isCollapsed) {
-    return (
-      <div className="py-1.5">
-        <div className="mb-2 px-2 text-xs font-medium text-sidebar-foreground/70">
-          Start New Capture
-        </div>
-
-        <div className="bg-popover text-popover-foreground rounded-lg border shadow-lg p-2 grid grid-cols-2 gap-2 animate-in fade-in-0 zoom-in-95">
-          <Button
-            variant="ghost"
-            className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-            onClick={handleStartCapture}
-          >
-            <SquareDashedMousePointer className="h-5 w-5 text-primary" />
-            <div className="text-center">
-              <div className="font-medium text-xs">Capture Area</div>
-              <div className="text-[10px] text-muted-foreground">Select region</div>
-            </div>
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-            onClick={handleUpload}
-          >
-            <Upload className="h-5 w-5 text-primary" />
-            <div className="text-center">
-              <div className="font-medium text-xs">Upload Image</div>
-              <div className="text-[10px] text-muted-foreground">From computer</div>
-            </div>
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-            onClick={handleSelect}
-          >
-            <MousePointerClick className="h-5 w-5 text-primary" />
-            <div className="text-center">
-              <div className="font-medium text-xs">Select</div>
-              <div className="text-[10px] text-muted-foreground">Choose element</div>
-            </div>
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="h-20 flex flex-col items-center justify-center gap-1.5 hover:bg-accent"
-            onClick={handleFromCaptures}
-          >
-            <FolderOpen className="h-5 w-5 text-primary" />
-            <div className="text-center">
-              <div className="font-medium text-xs">From Captures</div>
-              <div className="text-[10px] text-muted-foreground">Use existing</div>
-            </div>
-          </Button>
-        </div>
-      </div>
-    )
-  }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className="w-full justify-center px-2" size="icon">
-          <Plus className="size-4" />
-        </Button>
-      </DropdownMenuTrigger>
+    <div className="py-1.5">
+      <div className="mb-2 px-2 text-xs font-medium text-sidebar-foreground/70">
+        Start New Capture
+      </div>
 
-      <DropdownMenuContent className="min-w-48 rounded-lg" side="left" align="start" sideOffset={4}>
-        <DropdownMenuItem onClick={handleStartCapture} className="cursor-pointer py-2.5">
-          <ScanLine className="mr-2 size-4" />
-          <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-sm">Capture Area</span>
-            <span className="text-xs text-muted-foreground">Select region</span>
-          </div>
-        </DropdownMenuItem>
+      <Card
+        className="cursor-pointer group relative min-h-[200px] sm:h-auto overflow-hidden py-0 border-1 border-dashed border-sidebar-border border-purple-200 bg-gradient-to-br from-purple-50 via-purple-50/50 to-background"
 
-        <DropdownMenuItem onClick={handleUpload} className="cursor-pointer py-2.5">
-          <Upload className="mr-2 size-4" />
-          <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-sm">Upload Image</span>
-            <span className="text-xs text-muted-foreground">From computer</span>
-          </div>
-        </DropdownMenuItem>
+      >
+        <div
+          className={`absolute inset-0 flex items-center justify-center rounded-lg bg-gradient-to-br from-purple-50 via-purple-50/95 to-purple-100/90 backdrop-blur-sm transition-all duration-300 }`}
+        >
+          <div className="grid h-full w-full grid-cols-4 gap-2 p-3 sm:grid-cols-2">
+              <Button
+                variant="ghost"
+                className="group/btn relative h-full flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-transparent bg-gradient-to-br from-purple-50/80 to-purple-100/30 transition-all duration-200 hover:border-purple-200 hover:from-purple-100 hover:to-purple-50 hover:shadow-lg hover:shadow-purple-200/50"
+                onClick={handleStartCapture}
+              >
+                <SquareDashedMousePointer className="h-5 w-5 text-purple-600" />
+                <div className="text-center">
+                  <div className="font-medium text-xs">Capture Area</div>
+                  <div className="text-[10px] text-muted-foreground">Select region</div>
+                </div>
+              </Button>
 
-        <DropdownMenuItem onClick={handleSelect} className="cursor-pointer py-2.5">
-          <MousePointerClick className="mr-2 size-4" />
-          <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-sm">Select</span>
-            <span className="text-xs text-muted-foreground">Choose element</span>
-          </div>
-        </DropdownMenuItem>
+            <Button
+              variant="ghost"
+              className="group/btn relative h-full flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-transparent bg-gradient-to-br from-purple-50/80 to-purple-100/30 transition-all duration-200 hover:border-purple-200 hover:from-purple-100 hover:to-purple-50 hover:shadow-lg hover:shadow-purple-200/50"
+              onClick={handleUpload}
+            >
 
-        <DropdownMenuItem onClick={handleFromCaptures} className="cursor-pointer py-2.5">
-          <FolderOpen className="mr-2 size-4" />
-          <div className="flex flex-col gap-0.5">
-            <span className="font-medium text-sm">From Captures</span>
-            <span className="text-xs text-muted-foreground">Use existing</span>
+              <Upload className="h-5 w-5 text-purple-600" />
+              <div className="text-center">
+                <div className="font-medium text-xs">Upload Image</div>
+                <div className="text-[10px] text-muted-foreground">From computer</div>
+              </div>
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="group/btn relative h-full flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-transparent bg-gradient-to-br from-purple-50/80 to-purple-100/30 transition-all duration-200 hover:border-purple-200 hover:from-purple-100 hover:to-purple-50 hover:shadow-lg hover:shadow-purple-200/50"
+              onClick={handleSelect}
+            >
+              <MousePointerClick className="h-5 w-5 text-purple-600" />
+              <div className="text-center">
+                <div className="font-medium text-xs">Select</div>
+                <div className="text-[10px] text-muted-foreground">Choose element</div>
+              </div>
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="group/btn relative h-full flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-transparent bg-gradient-to-br from-purple-50/80 to-purple-100/30 transition-all duration-200 hover:border-purple-200 hover:from-purple-100 hover:to-purple-50 hover:shadow-lg hover:shadow-purple-200/50"
+              onClick={handleFromCaptures}
+            >
+              <FolderOpen className="h-5 w-5 text-purple-600" />
+              <div className="text-center">
+                <div className="font-medium text-xs">From Captures</div>
+                <div className="text-[10px] text-muted-foreground">Use existing</div>
+              </div>
+            </Button>
           </div>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </div>
+      </Card >
+    </div >
   )
 }

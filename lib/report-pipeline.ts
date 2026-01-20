@@ -1,5 +1,5 @@
 import { useReportStore } from "@/store/report-store"
-import { generateDummyReport } from "@/lib/generate-dummy-report"
+import { generateDummyReport } from "@/lib/dummy-report-data"
 import type { ReportItem } from "@/store/report-store"
 
 /**

@@ -1,4 +1,4 @@
-import { CaptureItem } from "@/store/capture-store"
+
 import { CheckCircle2 } from "lucide-react"
 
 interface CaptureTimestampProps {

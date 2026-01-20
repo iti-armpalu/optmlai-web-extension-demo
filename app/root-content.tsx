@@ -1,29 +1,48 @@
 "use client"
 
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { SidebarProvider } from "@/components/ui/sidebar"
 import { FloatingToggle } from "@/components/floating-toggle"
-import { ReportDrawer } from "@/components/report-viewer/report-drawer"
-import { CapturesDrawer } from "@/components/captures/capture-drawer/capture-drawer"
+import { DrawerHost } from "@/components/drawers/drawer-host"
+import { DebugSubscriptions } from "@/components/debug-subscriptions"
+import { processCapturedImage } from "@/lib/report-pipeline"
+import { useReportStore } from "@/store/report-store"
 import { useUIStore } from "@/store/ui-store"
+import { CapturePreviewPopupHost } from "@/components/capture-tool/capture-preview-popup-host"
 
 export function RootContent({ children }: { children: React.ReactNode }) {
-  const { activeDrawer, openDrawer } = useUIStore()
+  const { startProcessing, stopProcessing, finishProcessing } = useUIStore()
+  const addReport = useReportStore((s) => s.addReport)
+
+  const handleGenerate = async (imageData: string) => {
+    startProcessing()
+    try {
+      const report = await processCapturedImage(imageData) // returns ReportItem
+      addReport(report)
+      finishProcessing(report.id) // opens report drawer via UI store
+    } finally {
+      stopProcessing()
+    }
+  }
+
 
   return (
-    <>
-      {children}
+    <TooltipProvider>
+      <SidebarProvider defaultOpen={true}>
+        {children}
 
-      {/* Global floating UI */}
-      <FloatingToggle />
+        <DebugSubscriptions />
 
-      {/* Global drawers */}
-      <ReportDrawer />
+        <FloatingToggle />
 
-      <CapturesDrawer
-        open={activeDrawer === "captures"}
-        onOpenChange={() => openDrawer(null)}
-      />
+        <DrawerHost />
 
-      {/* Add future drawers here */}
-    </>
+       {/* ✅ Global capture preview (not tied to sidebar visibility) */}
+      {/* <CapturePreviewPopupHost onGenerate={handleGenerate} /> */}
+
+
+
+      </SidebarProvider>
+    </TooltipProvider>
   )
 }
