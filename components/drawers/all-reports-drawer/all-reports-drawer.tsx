@@ -49,7 +49,7 @@ export function AllReportsDrawer({
     <ResizableSheet
       open={open}
       onOpenChange={onOpenChange}
-      initialWidth={1000}
+      initialWidth={1600}
       minWidth={480}
       maxWidth="min(calc(100vw - 10px), 1600px)"
       className={dimmed ? "pointer-events-none" : "p-0"}
