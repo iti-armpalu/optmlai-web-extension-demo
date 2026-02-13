@@ -1,6 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent} from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Info } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { HelpCircle } from "lucide-react"
 
 interface MetricCardProps {
     title: string
@@ -21,41 +22,46 @@ export function MetricCard({
     ratingExplanation, // Added to destructured props
     badge, // Added badge to destructured props
 }: MetricCardProps) {
+    const isNumeric = /^\d+$/.test(value)
     return (
-        <Card className="border-purple-600/10 bg-purple-50/50 h-full flex flex-col gap-4">
-            <CardHeader>
-                <CardTitle className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    {title}
-                    {tooltipContent && (
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Info className="h-3.5 w-3.5 text-muted-foreground/60 hover:text-muted-foreground cursor-help transition-colors" />
-                                </TooltipTrigger>
-                                <TooltipContent className="max-w-xs">
-                                    <p className="text-xs leading-relaxed">{tooltipContent}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    )}
-                </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col">
-                {badge && (
-                    <div className="self-start inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 mb-1">
-                        <span className="text-[8px] font-semibold text-purple-600 uppercase tracking-wide">{badge}</span>
-                    </div>
-                )}
-                <div className={`text-2xl font-bold text-success ${valueColor || "text-foreground"}`}>{value}</div>
-                <p className="text-xs text-muted-foreground mt-1 mb-2">{description}</p>
-                {/* {ratingExplanation && ( */}
-                <div className="mt-auto pt-3 border-t border-border/50">
-                    <p className="text-xs font-medium text-foreground/80 flex items-center gap-1.5">
-                        {/* <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500" /> */}
+        <Card className="transition-all duration-200 hover:border-primary/20 hover:shadow-sm py-0">
+            <CardContent className="pt-5 pb-4">
+                {/* Title row */}
+                <div className="flex items-center gap-1.5 mb-3">
+                    <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</p>
+                    <TooltipProvider delayDuration={200}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <button type="button" className="cursor-help focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-full">
+                                    <HelpCircle className="w-3.5 h-3.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors" />
+                                    <span className="sr-only">More info about {title}</span>
+                                </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-60 text-xs leading-relaxed">
+                                {tooltipContent}
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
+
+                {/* Value */}
+                <p className={cn(
+                    "font-bold leading-tight",
+                    valueColor,
+                    isNumeric ? "text-3xl tabular-nums" : "text-lg",
+                )}>
+                    {value}
+                </p>
+
+                {/* Description */}
+                <p className="text-xs text-muted-foreground mt-1">{description}</p>
+
+                {/* Explanation */}
+                <div className="mt-3 pt-3 border-t border-border/50">
+                    <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
                         {ratingExplanation}
                     </p>
                 </div>
-                {/* )} */}
             </CardContent>
         </Card>
     )

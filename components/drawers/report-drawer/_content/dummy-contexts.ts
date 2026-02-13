@@ -1,4 +1,5 @@
 export interface ContextData {
+  id: string
   name: string
   environment: string
   exposureTime: string
@@ -13,9 +14,16 @@ export interface ContextData {
 export const dummyContextsTab = {
   intro:
     "This section evaluates how well your creative performs across different real-world viewing contexts, based on attention, clarity, and decision timing.",
-  contextPerformanceData: {
+  
+    keyInsight: {
+      body:
+        "This creative performs strongest in fast-scanning environments where brand and message are processed quickly, but loses effectiveness in slower, comparison-driven contexts that require deeper product understanding.",
+    },
+  
+    contextPerformanceData: {
     retail: [
       {
+        id: "proximity",
         name: "Proximity (Billboards / OOH)",
         environment: "Billboards, transit ads, outdoor signage",
         exposureTime: "1–2s exposure",
@@ -33,6 +41,7 @@ export const dummyContextsTab = {
         recommendation: "Best used for awareness and brand recall, not direct response.",
       },
       {
+        id: "transition",
         name: "Transition (Entrance / Windows)",
         environment: "Store entrances, window displays, escalator ads",
         exposureTime: "2–4s exposure",
@@ -50,6 +59,7 @@ export const dummyContextsTab = {
         recommendation: "Run as-is for building interest during the entry phase.",
       },
       {
+        id: "impulse",
         name: "Impulse (Checkout / Promo)",
         environment: "Checkout lanes, end caps, promotional displays",
         exposureTime: "3–5s exposure",
@@ -66,6 +76,7 @@ export const dummyContextsTab = {
         recommendation: "Simplify for this context by reducing text and emphasizing one clear benefit.",
       },
       {
+        id: "destination",
         name: "Destination (Shelf / Aisle)",
         environment: "Product shelves, in-aisle displays, comparison shopping",
         exposureTime: "5–15s exposure",
@@ -87,6 +98,7 @@ export const dummyContextsTab = {
 
     ecommerce: [
       {
+        id: "discovery",
         name: "Discovery (Category Pages)",
         environment: "Product grid thumbnails, category browsing, search results",
         exposureTime: "0.5–3s exposure",
@@ -104,6 +116,7 @@ export const dummyContextsTab = {
         recommendation: "Run as-is. This creative is optimized for discovery and click-through.",
       },
       {
+        id: "evaluation",
         name: "Evaluation (PDP Features)",
         environment: "Product detail pages, feature comparisons, specification reading",
         exposureTime: "5–20s exposure",
@@ -122,6 +135,7 @@ export const dummyContextsTab = {
           "Restructure with clear sections, bullet points, and visual aids before using in evaluation contexts.",
       },
       {
+        id: "conversion",
         name: "Conversion (Cart / Checkout)",
         environment: "Shopping cart, checkout page, last-mile reassurance",
         exposureTime: "5–15s exposure",
@@ -141,6 +155,7 @@ export const dummyContextsTab = {
 
     social: [
       {
+        id: "awareness",
         name: "Awareness (Thumb-Stop)",
         environment: "Social media feeds, story placements, scroll-based content",
         exposureTime: "0.5–2s exposure",
@@ -158,6 +173,7 @@ export const dummyContextsTab = {
         recommendation: "Run as-is. This creative is optimized for feed visibility and engagement.",
       },
       {
+        id: "consideration",
         name: "Consideration (Pause & Evaluate)",
         environment: "Paused feed viewing, saved posts, second looks",
         exposureTime: "3–8s exposure",
@@ -175,6 +191,7 @@ export const dummyContextsTab = {
         recommendation: "Run as-is, or test adding social proof to strengthen conversion.",
       },
       {
+        id: "validation",
         name: "Validation (Social Proof Check)",
         environment: "Profile visits, comment reading, credibility assessment",
         exposureTime: "5–15s exposure",
@@ -194,7 +211,7 @@ export const dummyContextsTab = {
     ],
   },
   footerNote:
-    "XXX.",
+    "Your creative does not perform the same in every environment. Understanding where it fits best helps you place it in contexts where attention, clarity, and action are most likely to occur.",
 
 } as const
 

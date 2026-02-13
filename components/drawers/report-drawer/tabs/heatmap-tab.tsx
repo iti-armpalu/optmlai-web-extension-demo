@@ -25,8 +25,12 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
         <div className="space-y-8">
 
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <Info className="h-4 w-4 shrink-0" />
-                <p>{dummyHeatmapTab.intro}</p>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+                    <Info className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <p>
+                    {dummyHeatmapTab.intro}
+                </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -46,43 +50,44 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
             </div>
 
 
-            <Card>
+            <Card className="bg-card/10 ">
                 <CardHeader>
                     <CardTitle className="text-xl">Visual Attention Map</CardTitle>
-                    <CardDescription>See where viewers are most likely to look first</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
 
-                    <div className="flex justify-between items-start gap-6 p-4 rounded-lg border border-border bg-muted/30">
-                        <div className="flex-1 space-y-1">
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm font-semibold">Original</span>
-                                {/* <Info className="w-3.5 h-3.5 text-muted-foreground" /> */}
-                            </div>
-                            <div className="flex items-center gap-2">
-                                {/* <Info className="w-3.5 h-3.5 text-muted-foreground" /> */}
-                                <p className="text-xs text-muted-foreground leading-relaxed max-w-md">
-                                    This is the captured screenshot before analysis. Compare the original screenshot with
-                                    its attention heatmap.
-                                </p>
-                            </div>
-                        </div>
+                    <Card className="bg-card/10">
+                        <CardContent>
+                            <div className="flex justify-between items-start gap-6">
+                                <div className="flex-1 space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sm font-semibold">Original</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <p className="text-xs text-muted-foreground leading-relaxed max-w-md">
+                                            This is the captured screenshot before analysis. Compare the original screenshot with
+                                            its attention heatmap.
+                                        </p>
+                                    </div>
+                                </div>
 
-                        <div className="flex-1 space-y-1 text-right">
-                            <div className="flex items-center gap-2 justify-end">
-                                {/* <Info className="w-3.5 h-3.5 text-muted-foreground" /> */}
-                                <span className="text-sm font-semibold">Attention Heatmap Overlay</span>
+                                <div className="flex-1 space-y-1 text-right">
+                                    <div className="flex items-center gap-2 justify-end">
+                                        <span className="text-sm font-semibold">Attention Heatmap Overlay</span>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground leading-relaxed  max-w-xs ml-auto">
+                                        Drag the slider to reveal where users are most visually focused.
+                                    </p>
+                                </div>
                             </div>
-                            <p className="text-xs text-muted-foreground leading-relaxed  max-w-xs ml-auto">
-                                Drag the slider to reveal where users are most visually focused.
-                            </p>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
                     <HeatmapSlider
                         beforeSrc={report.image}
                         afterSrc={report.report.heatmap.image}
                     />
+
                     <div className="space-y-3">
                         <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                             <span>Attention Intensity Scale</span>
@@ -112,15 +117,23 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                 </CardContent>
             </Card>
 
-            {/* Footer Note */}
-            <div className="p-4 rounded-lg bg-muted/30 border border-border/50">
-                <div className="flex items-center gap-3">
-                    <Info className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
-                    <div className="text-xs text-muted-foreground leading-relaxed">
-                        <strong className="text-foreground">Why this matters:{" "}</strong>{dummyHeatmapTab.footerNote}
+            {/* Footer card */}
+            <Card className="bg-card/10">
+                <CardContent>
+                    <div className="flex items-start gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+                            <Info className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-medium text-foreground">Why this matters</p>
+                            <p className="text-xs text-muted-foreground leading-relaxed mt-1">
+                                {dummyHeatmapTab.footerNote}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </CardContent>
+            </Card>
+
         </div>
 
     )

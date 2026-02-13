@@ -10,10 +10,11 @@ import {
 
 } from "@/components/ui/dialog"
 
-import { Lock, ArrowRight, Check } from "lucide-react"
+import { Lock, ArrowRight, Check, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { KeyElementsTab } from "./key-elements-tab"
 import { ChannelPurposeTab } from "./channel-purpose-tab"
+import StepIndicator from "./step-indicator"
 
 
 const steps = [
@@ -45,7 +46,7 @@ interface AnalysisSetupDialogProps {
 export function AnalysisSetupDialog({ open, onOpenChange, onConfirm, isLocked = false, }: AnalysisSetupDialogProps) {
     const [activeTab, setActiveTab] = useState("key-elements")
     const [justConfirmed, setJustConfirmed] = useState<null | "key-elements" | "channel-purpose">(null)
-
+    const [step, setStep] = useState(1);
 
     // "soft" confirmations, only live while dialog is open
     const [elementsReady, setElementsReady] = useState(false)
@@ -100,7 +101,7 @@ export function AnalysisSetupDialog({ open, onOpenChange, onConfirm, isLocked = 
                     className="flex h-full flex-col"
                 >
                     {/* Step Progress Framing */}
-                    <div className="shrink-0 border-b border-border bg-muted/40 px-8 py-4">
+                    {/* <div className="shrink-0 border-b border-border bg-muted/40 px-8 py-4">
                         <div className="flex flex-col gap-0.5">
                             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                                 {`Step ${currentStepIndex + 1} of ${steps.length}`}
@@ -121,11 +122,51 @@ export function AnalysisSetupDialog({ open, onOpenChange, onConfirm, isLocked = 
                                 {steps[currentStepIndex].description}
                             </p>
                         </div>
+                    </div> */}
+
+                    <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+                        <div>
+                            <h2 className="text-base font-semibold text-foreground">
+                                {isLocked ? "Analysis configured" : "Refine your analysis"}
+                            </h2>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                                {isLocked
+                                    ? "Inputs locked — generating full report"
+                                    : "Help us deliver accurate insights for your creative"}
+                            </p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <StepIndicator currentStep={currentStepIndex} totalSteps={2} isComplete={isLocked} />
+                        </div>
                     </div>
+
+                    {/* Locked banner */}
+                    {isLocked && (
+                        <div className="px-6 py-2.5 bg-primary/5 border-b border-primary/10 flex items-center gap-2">
+                            <Lock className="w-3.5 h-3.5 text-primary" />
+                            <span className="text-xs font-medium text-primary">
+                                Inputs confirmed and locked — analysis in progress
+                            </span>
+                        </div>
+                    )}
 
                     <DialogHeader className="sr-only">
                         <DialogTitle>Campaign Builder</DialogTitle>
                     </DialogHeader>
+
+                    {/* <div className="p-6 min-h-[380px] flex flex-col">
+                        {step === 1 ? (
+                            <KeyElementsTab
+                                onConfirm={() => onConfirm}
+                                isLocked={isLocked}
+                            />
+                        ) : (
+                            <ChannelPurposeTab
+                                onConfirm={() => onConfirm}
+                                isLocked={isLocked}
+                            />
+                        )}
+                    </div> */}
 
                     <div className="shrink-0 w-full px-8 pb-0 pt-4">
                         <TabsList className="grid w-full grid-cols-2">
@@ -170,6 +211,21 @@ export function AnalysisSetupDialog({ open, onOpenChange, onConfirm, isLocked = 
                     <div className="shrink-0 border-t border-border bg-muted/40 px-8 py-4">
                         <div className="flex items-center justify-between gap-4">
 
+                            {step === 1
+                                ? (
+                                    ""
+                                )
+                                : (
+                                    <button
+                                        // onClick={onBack}
+                                        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        <ArrowLeft className="w-3.5 h-3.5" />
+                                        Back
+                                    </button>
+                                )
+                            }
+
                             <div className="flex items-start gap-2.5 rounded-lg border border-border bg-muted/30 px-4 py-3">
                                 <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                                 <p className="text-xs leading-relaxed text-muted-foreground">{footerNote}</p>
@@ -177,13 +233,13 @@ export function AnalysisSetupDialog({ open, onOpenChange, onConfirm, isLocked = 
 
 
                             <div className="flex shrink-0 items-center gap-2">
-                                <Button
+                                {/* <Button
                                     variant="outline"
                                     className="h-9 px-4 bg-transparent"
                                     onClick={() => onOpenChange(false)}
                                 >
                                     Cancel
-                                </Button>
+                                </Button> */}
 
                                 <div className="flex flex-col items-center">
                                     {/* Step confirm button (soft confirm) */}

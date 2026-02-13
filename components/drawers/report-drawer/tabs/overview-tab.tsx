@@ -1,15 +1,16 @@
 import { Info, Trophy, Target, Zap, Sparkle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MetricCard } from "./metric-card"
-import { dummyReportOverview } from "@/lib/dummy-report-data"
 import { LockedSection } from "../locked-report-overlay"
+import { dummyOverviewTab } from "../_content/dummy-overview"
 
+type MetricTone = "positive" | "neutral" | "negative"
 
-const toneToColor = {
-  positive: "text-green-500",
-  warning: "text-orange-500",
+const toneToColor: Record<MetricTone, string> = {
+  positive: "text-emerald-600",
+  neutral: "text-amber-600",
   negative: "text-red-500",
-} as const
+}
 
 interface OverviewTabProps {
   analysisSetupConfirmed: boolean
@@ -20,45 +21,16 @@ export function OverviewTab({ analysisSetupConfirmed, onOpenDialog }: OverviewTa
 
   return (
     <div className="space-y-8">
+
       {/* Intro */}
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-        <Info className="h-4 w-4 shrink-0" />
-        <p>{dummyReportOverview.intro}</p>
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted flex-shrink-0">
+          <Info className="w-4 h-4 text-muted-foreground" />
+        </div>
+        <p>
+          {dummyOverviewTab.intro}
+        </p>
       </div>
-
-      {/* Metrics */}
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {dummyReportOverview.metrics.map((m) => (
-          <MetricCard
-            key={m.title}
-            title={m.title}
-            value={m.value}
-            description={m.description}
-            tooltipContent={m.tooltip}
-            ratingExplanation={m.explanation}
-            valueColor={toneToColor[m.tone]}
-          />
-        ))}
-      </section>
-
-      {/* Key Insight */}
-      <Card className="border-green-600/10 bg-green-50/50 dark:bg-green-950/30">
-        <CardContent>
-          <div className="flex gap-3">
-            <Sparkle className="h-5 w-5" />
-            <div>
-              <h3 className="text-sm font-semibold">
-                {dummyReportOverview.keyInsight.title}
-              </h3>
-              <p className="leading-relaxed">
-                {/* {tpl(dummyReportOverview.keyInsight.body, vars)} */}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Summary */}
 
       <LockedSection
         locked={!analysisSetupConfirmed}
@@ -66,80 +38,88 @@ export function OverviewTab({ analysisSetupConfirmed, onOpenDialog }: OverviewTa
         overlayTitle="Confirmation Required"
         overlayDescription="Confirm detected elements to view this insight."
       >
-        <Card>
+
+        {/* Metrics */}
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {dummyOverviewTab.metrics.map((m) => (
+            <MetricCard
+              key={m.title}
+              title={m.title}
+              value={m.value}
+              description={m.description}
+              tooltipContent={m.tooltip}
+              ratingExplanation={m.explanation}
+              valueColor={toneToColor[m.tone]}
+            />
+          ))}
+        </section>
+
+        {/* Summary */}
+        <Card className="bg-card/10 ">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-6 w-6" />
-              {dummyReportOverview.summary.title}
+            <CardTitle className="text-xl">
+              {dummyOverviewTab.summary.title}
             </CardTitle>
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm text-muted-foreground">
-                    {dummyReportOverview.summary.bestPerforming.label}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-xl font-bold">
-                    {/* {tpl(dummyReportOverview.summary.bestPerforming.value, vars)} */}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {/* {tpl(dummyReportOverview.summary.bestPerforming.context, vars)} */}
-                  </div>
-                </CardContent>
-              </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm text-muted-foreground">
-                    {dummyReportOverview.summary.needsImprovement.label}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="font-bold">
-                    {dummyReportOverview.summary.needsImprovement.value}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {dummyReportOverview.summary.needsImprovement.detail}
-                  </div>
-                </CardContent>
-              </Card>
+            {/* Creative Performance Summary */}
+            <Card>
+              <CardContent>
+                <h3 className="text-sm font-semibold text-foreground mb-2">Creative Performance Summary</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  This creative demonstrates strong visual foundations with effective brand presence and product imagery that
+                  capture attention quickly. However, message density and a low-contrast CTA reduce its ability to convert
+                  attention into action. The overall score of 71 places it above average but below top-performing benchmarks,
+                  suggesting targeted refinements rather than a full redesign.
+                </p>
+              </CardContent>
+            </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-sm text-muted-foreground">
-                    {dummyReportOverview.summary.quickWin.label}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="font-bold">
-                    {dummyReportOverview.summary.quickWin.value}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {dummyReportOverview.summary.quickWin.impact}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
 
-            {/* Priority actions */}
-            <div>
-              <h3 className="font-semibold flex items-center gap-2 mb-2">
-                <Zap className="h-5 w-5" />
-                Priority Actions
-              </h3>
-              <ul className="space-y-2">
-                {dummyReportOverview.summary.priorityActions.map((item, i) => (
-                  <li key={i} className="flex gap-2 text-sm">
-                    <span className="font-semibold">{i + 1}.</span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {/* Recommended Improvements */}
+            <Card>
+              <CardContent>
+                <h3 className="text-sm font-semibold text-foreground mb-3">Priority Actions</h3>
+                <ol className="space-y-3">
+                  {dummyOverviewTab.summary.actions.map((action, index) => (
+                    <li key={index} className="flex gap-3 items-start">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold flex-shrink-0 mt-0.5">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">{action.title}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                          {action.description}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </CardContent>
+            </Card>
+
+            {/* Context Usage Guidance */}
+            <Card className="border-purple-600/10 bg-purple-50/50 text-purple-600 dark:bg-purple-950/30 dark:text-purple-500">
+              <CardContent>
+                <div className="flex items-start gap-3">
+                  <div>
+                    <p className="text-xs font-medium text-foreground uppercase tracking-wider mb-1">
+                      Best Used In
+                    </p>
+                    <p className="text-sm text-foreground leading-relaxed">
+                      Retail proximity and e-commerce placements where
+                      purchase intent is already high and brand recognition
+                      drives conversion.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+
+
           </CardContent>
         </Card>
       </LockedSection>

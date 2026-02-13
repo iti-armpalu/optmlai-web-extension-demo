@@ -134,8 +134,8 @@ export function ReportDrawer({
         <ResizableSheet
             open={open}
             onOpenChange={onOpenChange}
-            initialWidth={1000}
-            minWidth={700}
+            initialWidth={1600}
+            minWidth={1000}
             maxWidth="min(calc(100vw - 10px), 1600px)"
             className="p-0"
             zIndex={zIndex}

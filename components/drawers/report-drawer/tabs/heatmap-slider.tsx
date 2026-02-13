@@ -18,7 +18,7 @@ export default function HeatmapSlider({
   afterSrc,
 }: HeatmapSliderProps) {
   return (
-    <div className="relative w-full aspect-[16/9] rounded-lg overflow-hidden border shadow bg-muted mb-8">
+    <div className="relative w-full aspect-[16/9] overflow-hidden bg-muted mb-8">
       <Comparison className="h-full w-full" mode="drag">
         {/* Before Image */}
         <ComparisonItem position="right">
