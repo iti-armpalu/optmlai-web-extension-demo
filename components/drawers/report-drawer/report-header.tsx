@@ -167,7 +167,7 @@ export function ReportHeader({
 
             {!analysisSetupConfirmed && (
               <p className="text-xs text-muted-foreground">
-                To complete analysis: confirm key elements and channel
+                Verify detected elements and configure your analysis context to generate a complete optimization report.
               </p>
             )}
           </div>

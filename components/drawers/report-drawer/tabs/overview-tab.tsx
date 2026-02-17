@@ -40,7 +40,7 @@ export function OverviewTab({ analysisSetupConfirmed, onOpenDialog }: OverviewTa
       >
 
         {/* Metrics */}
-        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
           {dummyOverviewTab.metrics.map((m) => (
             <MetricCard
               key={m.title}
@@ -77,7 +77,6 @@ export function OverviewTab({ analysisSetupConfirmed, onOpenDialog }: OverviewTa
               </CardContent>
             </Card>
 
-
             {/* Recommended Improvements */}
             <Card>
               <CardContent>
@@ -85,7 +84,7 @@ export function OverviewTab({ analysisSetupConfirmed, onOpenDialog }: OverviewTa
                 <ol className="space-y-3">
                   {dummyOverviewTab.summary.actions.map((action, index) => (
                     <li key={index} className="flex gap-3 items-start">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-semibold flex-shrink-0 mt-0.5">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-600 text-orange-100 text-xs font-semibold flex-shrink-0 mt-0.5">
                         {index + 1}
                       </span>
                       <div>
@@ -122,6 +121,7 @@ export function OverviewTab({ analysisSetupConfirmed, onOpenDialog }: OverviewTa
 
           </CardContent>
         </Card>
+
       </LockedSection>
 
     </div>

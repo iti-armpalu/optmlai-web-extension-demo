@@ -5,7 +5,6 @@ import { ReportItem } from "@/store/report-store"
 import HeatmapSlider from "./heatmap-slider"
 import { Info, Sparkle } from "lucide-react"
 import { dummyHeatmapTab } from "../_content/dummy-heatmap"
-import { renderBold } from "../_content/rich-text"
 
 interface HeatmapTabProps {
     report: ReportItem
@@ -40,8 +39,8 @@ export function HeatmapTab({ report }: HeatmapTabProps) {
                             <Sparkle className="w-5 h-5" />
                             <div className="flex-1 space-y-1">
                                 <h3 className="text-sm font-semibold">Key Insight</h3>
-                                <p className="text-sm text-muted-foreground leading-relaxed">
-                                    {renderBold(dummyHeatmapTab.keyInsight.body)}
+                                <p className="text-sm text-foreground leading-relaxed">
+                                    {dummyHeatmapTab.keyInsight.body}
                                 </p>
                             </div>
                         </div>

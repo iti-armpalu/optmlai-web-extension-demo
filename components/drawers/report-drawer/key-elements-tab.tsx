@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Check, Pencil, Plus, Trash2, Type, ImageIcon, Stamp, MousePointerClick, Move, Lock, AlertTriangle, CheckCircle2 } from "lucide-react"
+import { Check, Pencil, Plus, Trash2, Type, ImageIcon, Stamp, MousePointerClick, Move, CheckCircle2, ArrowRight } from "lucide-react"
 
 // Category types
 type CategoryType = "tagline" | "imagery" | "logo" | "button"
@@ -43,7 +43,8 @@ export interface DetectedElement {
 interface KeyElementsTabProps {
   onConfirm: () => void
   creativeImageUrl?: string
-  isLocked?: boolean
+  readOnly?: boolean
+  onNext?: () => void;
 }
 
 const categoryConfig: Record<CategoryType, { label: string; icon: React.ReactNode; color: string }> = {
@@ -65,7 +66,8 @@ const defaultElements: DetectedElement[] = [
 export function KeyElementsTab({
   onConfirm,
   creativeImageUrl = "https://images.squarespace-cdn.com/content/v1/5ef0ef1b02a1d05e6faff7ac/1593379290858-GI2TYZN1I701KK95J8W2/Ad_page_01.jpg",
-  isLocked = false
+  readOnly = false,
+  onNext
 }: KeyElementsTabProps) {
   const [editingElement, setEditingElement] = useState<string | null>(null)
   const [selectedElement, setSelectedElement] = useState<string | null>(null)
@@ -243,329 +245,337 @@ export function KeyElementsTab({
   const isInEditMode = editingElement !== null
 
   return (
-
-    <div className="grid gap-6 lg:grid-cols-2 py-4 flex-1 overflow-hidden">
-      {/* Creative Preview with Element Boxes */}
-      <div className="space-y-3 overflow-hidden flex flex-col">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Creative Preview</h3>
-          {isInEditMode && selectedElementData?.position && (
-            <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">
-              <Move className="h-3.5 w-3.5" />
-              Drag corners to resize frame
-            </div>
-          )}
-        </div>
-        <div ref={imageRef} className="relative rounded-xl overflow-hidden border-2 bg-muted/30 shadow-inner flex-1">
-          <img
-            src={creativeImageUrl || "/placeholder.svg"}
-            alt="Creative preview"
-            className="w-full h-auto"
-            crossOrigin="anonymous"
-          />
-          {/* Element highlight boxes - GREEN color */}
-          {detectedElements.map((element) => element.position && (
-            <div
-              key={`box-${element.id}`}
-              className={`absolute rounded-md transition-all duration-200 ${selectedElement === element.id
-                ? 'border-[3px] border-emerald-500 bg-emerald-500/20 shadow-lg ring-2 ring-emerald-500/30'
-                : 'border-2 border-dashed border-emerald-500/40 hover:border-emerald-500/70'
-                } ${isInEditMode && selectedElement === element.id ? 'cursor-move' : 'cursor-pointer'}`}
-              style={{
-                top: `${element.position.top}%`,
-                left: `${element.position.left}%`,
-                width: `${element.position.width}%`,
-                height: `${element.position.height}%`,
-              }}
-              onClick={() => !isResizing && setSelectedElement(selectedElement === element.id ? null : element.id)}
-              onMouseDown={(e) => {
-                if (isInEditMode && selectedElement === element.id) {
-                  handleResizeStart(e, 'move', element)
-                }
-              }}
-            >
-              {/* Label */}
-              <div className={`absolute -top-6 left-0 px-2 py-0.5 text-[10px] font-semibold rounded whitespace-nowrap shadow-md ${selectedElement === element.id
-                ? 'bg-emerald-500 text-white'
-                : 'bg-emerald-500/80 text-white'
-                }`}>
-                {element.label}
+    <>
+      <div className="grid gap-6 lg:grid-cols-2 p-6 flex-1 overflow-hidden">
+        {/* Creative Preview with Element Boxes */}
+        <div className="space-y-3 overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Creative Preview</h3>
+            {isInEditMode && selectedElementData?.position && (
+              <div className="flex items-center gap-2 text-xs text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-full">
+                <Move className="h-3.5 w-3.5" />
+                Drag corners to resize frame
               </div>
+            )}
+          </div>
+          <div ref={imageRef} className="relative rounded-xl overflow-hidden border-2 bg-muted/30 shadow-inner flex-1">
+            <img
+              src={creativeImageUrl || "/placeholder.svg"}
+              alt="Creative preview"
+              className="w-full h-auto"
+              crossOrigin="anonymous"
+            />
+            {/* Element highlight boxes - GREEN color */}
+            {detectedElements.map((element) => element.position && (
+              <div
+                key={`box-${element.id}`}
+                className={`absolute rounded-md transition-all duration-200 ${selectedElement === element.id
+                  ? 'border-[3px] border-emerald-500 bg-emerald-500/20 shadow-lg ring-2 ring-emerald-500/30'
+                  : 'border-2 border-dashed border-emerald-500/40 hover:border-emerald-500/70'
+                  } ${isInEditMode && selectedElement === element.id ? 'cursor-move' : 'cursor-pointer'}`}
+                style={{
+                  top: `${element.position.top}%`,
+                  left: `${element.position.left}%`,
+                  width: `${element.position.width}%`,
+                  height: `${element.position.height}%`,
+                }}
+                onClick={() => !isResizing && setSelectedElement(selectedElement === element.id ? null : element.id)}
+                onMouseDown={(e) => {
+                  if (isInEditMode && selectedElement === element.id) {
+                    handleResizeStart(e, 'move', element)
+                  }
+                }}
+              >
+                {/* Label */}
+                <div className={`absolute -top-6 left-0 px-2 py-0.5 text-[10px] font-semibold rounded whitespace-nowrap shadow-md ${selectedElement === element.id
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-emerald-500/80 text-white'
+                  }`}>
+                  {element.label}
+                </div>
 
-              {/* Resize handles - only show when editing this element */}
-              {isInEditMode && selectedElement === element.id && (
-                <>
-                  <div
-                    className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-emerald-500 rounded-full cursor-nw-resize border-2 border-white shadow-md"
-                    onMouseDown={(e) => handleResizeStart(e, 'nw', element)}
-                  />
-                  <div
-                    className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-emerald-500 rounded-full cursor-ne-resize border-2 border-white shadow-md"
-                    onMouseDown={(e) => handleResizeStart(e, 'ne', element)}
-                  />
-                  <div
-                    className="absolute -bottom-1.5 -left-1.5 w-3 h-3 bg-emerald-500 rounded-full cursor-sw-resize border-2 border-white shadow-md"
-                    onMouseDown={(e) => handleResizeStart(e, 'sw', element)}
-                  />
-                  <div
-                    className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-emerald-500 rounded-full cursor-se-resize border-2 border-white shadow-md"
-                    onMouseDown={(e) => handleResizeStart(e, 'se', element)}
-                  />
-                </>
-              )}
-            </div>
-          ))}
-          <div className="absolute bottom-3 right-3 px-3 py-1.5 bg-background/95 rounded-lg text-xs text-muted-foreground border shadow-sm">
-            Click to select • Edit mode enables frame resize
+                {/* Resize handles - only show when editing this element */}
+                {isInEditMode && selectedElement === element.id && (
+                  <>
+                    <div
+                      className="absolute -top-1.5 -left-1.5 w-3 h-3 bg-emerald-500 rounded-full cursor-nw-resize border-2 border-white shadow-md"
+                      onMouseDown={(e) => handleResizeStart(e, 'nw', element)}
+                    />
+                    <div
+                      className="absolute -top-1.5 -right-1.5 w-3 h-3 bg-emerald-500 rounded-full cursor-ne-resize border-2 border-white shadow-md"
+                      onMouseDown={(e) => handleResizeStart(e, 'ne', element)}
+                    />
+                    <div
+                      className="absolute -bottom-1.5 -left-1.5 w-3 h-3 bg-emerald-500 rounded-full cursor-sw-resize border-2 border-white shadow-md"
+                      onMouseDown={(e) => handleResizeStart(e, 'sw', element)}
+                    />
+                    <div
+                      className="absolute -bottom-1.5 -right-1.5 w-3 h-3 bg-emerald-500 rounded-full cursor-se-resize border-2 border-white shadow-md"
+                      onMouseDown={(e) => handleResizeStart(e, 'se', element)}
+                    />
+                  </>
+                )}
+              </div>
+            ))}
+            {!readOnly && (
+              <div className="absolute bottom-3 right-3 px-3 py-1.5 bg-background/95 rounded-lg text-xs text-muted-foreground border shadow-sm">
+                Click to select • Edit mode enables frame resize
+              </div>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Elements List by Category */}
-      <div className="space-y-4 overflow-y-auto pr-2">
-        <div className="flex items-center justify-between sticky top-0 bg-background pb-2 z-10">
+        {/* Elements List by Category */}
+        <div className="space-y-4 overflow-y-auto pr-2">
+          <div className="flex items-center justify-between sticky top-0 bg-background pb-2 z-10">
 
-          <div className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-            {detectedElements.length} elements detected
+            <div className="flex items-center gap-1.5 text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              {detectedElements.length} elements detected
+            </div>
+            {!readOnly && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5 h-8 bg-transparent"
+                onClick={() => setIsAddingElement(true)}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add Element
+              </Button>
+            )}
           </div>
-          {!isLocked && (
-            <Button
-              size="sm"
-              variant="outline"
-              className="gap-1.5 h-8 bg-transparent"
-              onClick={() => setIsAddingElement(true)}
-            >
-              <Plus className="h-3.5 w-3.5" />
-              Add Element
-            </Button>
-          )}
-        </div>
 
-        {/* Add New Element Form */}
-        {isAddingElement && !isLocked && (
-          <Card className="border-2 border-dashed border-primary/50 bg-primary/5">
-            <CardContent className="py-4 space-y-4">
-              <div className="grid grid-cols-4 gap-2">
-                {(Object.keys(categoryConfig) as CategoryType[]).map((cat) => (
-                  <Button
-                    key={cat}
-                    size="sm"
-                    variant={newElementCategory === cat ? "default" : "outline"}
-                    className="gap-1.5 text-xs"
-                    onClick={() => {
-                      setNewElementCategory(cat)
-                      setNewElementAttributes([])
-                    }}
-                  >
-                    {categoryConfig[cat].icon}
-                    {categoryConfig[cat].label}
-                  </Button>
-                ))}
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground">Label</label>
-                  <Input
-                    value={newElementLabel}
-                    onChange={(e) => setNewElementLabel(e.target.value)}
-                    placeholder="e.g., Main Headline"
-                    className="h-9"
-                    autoFocus
-                  />
+          {/* Add New Element Form */}
+          {isAddingElement && !readOnly && (
+            <Card className="border-2 border-dashed border-primary/50 bg-primary/5">
+              <CardContent className="py-4 space-y-4">
+                <div className="grid grid-cols-4 gap-2">
+                  {(Object.keys(categoryConfig) as CategoryType[]).map((cat) => (
+                    <Button
+                      key={cat}
+                      size="sm"
+                      variant={newElementCategory === cat ? "default" : "outline"}
+                      className="gap-1.5 text-xs"
+                      onClick={() => {
+                        setNewElementCategory(cat)
+                        setNewElementAttributes([])
+                      }}
+                    >
+                      {categoryConfig[cat].icon}
+                      {categoryConfig[cat].label}
+                    </Button>
+                  ))}
                 </div>
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground">Value</label>
-                  <Input
-                    value={newElementValue}
-                    onChange={(e) => setNewElementValue(e.target.value)}
-                    placeholder="e.g., The actual text"
-                    className="h-9"
-                  />
-                </div>
-              </div>
-              {getAttributeOptions(newElementCategory).length > 0 && (
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-muted-foreground">Attributes</label>
-                  <div className="flex flex-wrap gap-2">
-                    {getAttributeOptions(newElementCategory).map((attr) => (
-                      <label key={attr.id} className="flex items-center gap-1.5 text-xs cursor-pointer">
-                        <Checkbox
-                          checked={newElementAttributes.includes(attr.id)}
-                          onCheckedChange={() => toggleAttribute(attr.id, false)}
-                        />
-                        {attr.label}
-                      </label>
-                    ))}
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground">Label</label>
+                    <Input
+                      value={newElementLabel}
+                      onChange={(e) => setNewElementLabel(e.target.value)}
+                      placeholder="e.g., Main Headline"
+                      className="h-9"
+                      autoFocus
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-medium text-muted-foreground">Value</label>
+                    <Input
+                      value={newElementValue}
+                      onChange={(e) => setNewElementValue(e.target.value)}
+                      placeholder="e.g., The actual text"
+                      className="h-9"
+                    />
                   </div>
                 </div>
-              )}
-              <div className="flex gap-2 pt-1">
-                <Button size="sm" onClick={handleAddElement} className="gap-1.5" disabled={!newElementLabel.trim() || !newElementValue.trim()}>
-                  <Check className="h-3.5 w-3.5" />
-                  Add
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => {
-                  setIsAddingElement(false)
-                  setNewElementLabel("")
-                  setNewElementValue("")
-                  setNewElementAttributes([])
-                }}>
-                  Cancel
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                {getAttributeOptions(newElementCategory).length > 0 && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-muted-foreground">Attributes</label>
+                    <div className="flex flex-wrap gap-2">
+                      {getAttributeOptions(newElementCategory).map((attr) => (
+                        <label key={attr.id} className="flex items-center gap-1.5 text-xs cursor-pointer">
+                          <Checkbox
+                            checked={newElementAttributes.includes(attr.id)}
+                            onCheckedChange={() => toggleAttribute(attr.id, false)}
+                          />
+                          {attr.label}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-2 pt-1">
+                  <Button size="sm" onClick={handleAddElement} className="gap-1.5" disabled={!newElementLabel.trim() || !newElementValue.trim()}>
+                    <Check className="h-3.5 w-3.5" />
+                    Add
+                  </Button>
+                  <Button size="sm" variant="ghost" onClick={() => {
+                    setIsAddingElement(false)
+                    setNewElementLabel("")
+                    setNewElementValue("")
+                    setNewElementAttributes([])
+                  }}>
+                    Cancel
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-        {/* Category Groups */}
-        {(Object.keys(categoryConfig) as CategoryType[]).map((category) => (
-          <Card key={category} className="overflow-hidden gap-2 py-0">
+          {/* Category Groups */}
+          {(Object.keys(categoryConfig) as CategoryType[]).map((category) => (
+            <Card key={category} className="overflow-hidden gap-2 py-0">
 
-            <CardHeader className="border-b bg-muted/30 [.border-b]:pb-1 py-3">
-              <CardTitle className="flex items-center gap-2 text-sm">
-                {categoryConfig[category].icon}
-                {categoryConfig[category].label}
-                <span className="text-xs font-normal text-muted-foreground">
-                  ({groupedElements[category].length})
-                </span>
-              </CardTitle>
-            </CardHeader>
+              <CardHeader className="border-b bg-muted/30 [.border-b]:pb-1 py-3">
+                <CardTitle className="flex items-center gap-2 text-sm">
+                  {categoryConfig[category].icon}
+                  {categoryConfig[category].label}
+                  <span className="text-xs font-normal text-muted-foreground">
+                    ({groupedElements[category].length})
+                  </span>
+                </CardTitle>
+              </CardHeader>
 
 
-            <CardContent className="p-0 divide-y">
-              {groupedElements[category].length === 0 ? (
-                <p className="text-xs text-muted-foreground p-4 text-center">No {categoryConfig[category].label.toLowerCase()} elements detected</p>
-              ) : (
-                groupedElements[category].map((element) => (
-                  <div
-                    key={element.id}
-                    className={`p-3 transition-all duration-200 cursor-pointer ${selectedElement === element.id
-                      ? 'bg-emerald-500/10'
-                      : 'hover:bg-muted/50'
-                      }`}
-                    onClick={() => setSelectedElement(selectedElement === element.id ? null : element.id)}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-semibold">{element.label}</span>
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${element.confidence >= 95 ? 'bg-success/15 text-success' :
-                            element.confidence >= 85 ? 'bg-amber-500/15 text-amber-600' :
-                              'bg-destructive/15 text-destructive'
-                            }`}>
-                            {element.confidence}%
-                          </span>
-                          {element.position && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
-                              mapped
-                            </span>
+              <CardContent className="p-0 divide-y">
+                {groupedElements[category].length === 0 ? (
+                  <p className="text-xs text-muted-foreground p-4 text-center">No {categoryConfig[category].label.toLowerCase()} elements detected</p>
+                ) : (
+                  groupedElements[category].map((element) => (
+                    <div
+                      key={element.id}
+                      className={`p-3 transition-all duration-200 cursor-pointer ${selectedElement === element.id
+                        ? 'bg-emerald-500/10'
+                        : 'hover:bg-muted/50'
+                        }`}
+                      onClick={() => setSelectedElement(selectedElement === element.id ? null : element.id)}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-semibold">{element.label}</span>
+                            {element.position && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
+                                mapped
+                              </span>
+                            )}
+                          </div>
+
+                          {editingElement === element.id ? (
+                            <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
+                              <Input
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                className="h-8 text-sm"
+                                autoFocus
+                              />
+                              {getAttributeOptions(element.category).length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                  {getAttributeOptions(element.category).map((attr) => (
+                                    <label key={attr.id} className="flex items-center gap-1.5 text-xs cursor-pointer">
+                                      <Checkbox
+                                        checked={editAttributes.includes(attr.id)}
+                                        onCheckedChange={() => toggleAttribute(attr.id, true)}
+                                      />
+                                      {attr.label}
+                                    </label>
+                                  ))}
+                                </div>
+                              )}
+                              <div className="flex gap-2">
+                                <Button size="sm" variant="default" className="h-7 text-xs gap-1" onClick={() => handleSave(element.id)}>
+                                  <Check className="h-3 w-3" /> Save
+                                </Button>
+                                <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={handleCancel}>
+                                  Cancel
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <>
+                              <p className="text-sm text-muted-foreground">{element.value}</p>
+                              {element.attributes && element.attributes.length > 0 && (
+                                <div className="flex flex-wrap gap-1 mt-1.5">
+                                  {element.attributes.map((attrId) => {
+                                    const attrLabel = [...taglineAttributes, ...imageryAttributes].find(a => a.id === attrId)?.label
+                                    return attrLabel ? (
+                                      <span key={attrId} className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                                        {attrLabel}
+                                      </span>
+                                    ) : null
+                                  })}
+                                </div>
+                              )}
+                            </>
                           )}
                         </div>
 
-                        {editingElement === element.id ? (
-                          <div className="space-y-3" onClick={(e) => e.stopPropagation()}>
-                            <Input
-                              value={editValue}
-                              onChange={(e) => setEditValue(e.target.value)}
-                              className="h-8 text-sm"
-                              autoFocus
-                            />
-                            {getAttributeOptions(element.category).length > 0 && (
-                              <div className="flex flex-wrap gap-2">
-                                {getAttributeOptions(element.category).map((attr) => (
-                                  <label key={attr.id} className="flex items-center gap-1.5 text-xs cursor-pointer">
-                                    <Checkbox
-                                      checked={editAttributes.includes(attr.id)}
-                                      onCheckedChange={() => toggleAttribute(attr.id, true)}
-                                    />
-                                    {attr.label}
-                                  </label>
-                                ))}
-                              </div>
-                            )}
-                            <div className="flex gap-2">
-                              <Button size="sm" variant="default" className="h-7 text-xs gap-1" onClick={() => handleSave(element.id)}>
-                                <Check className="h-3 w-3" /> Save
-                              </Button>
-                              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={handleCancel}>
-                                Cancel
-                              </Button>
-                            </div>
+                        {editingElement !== element.id && !readOnly && (
+                          <div className="flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 w-7 p-0 hover:bg-muted"
+                              onClick={() => handleEdit(element.id, element)}
+                            >
+                              <Pencil className="h-3 w-3 text-muted-foreground" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 w-7 p-0 hover:bg-destructive/10"
+                              onClick={() => handleDeleteElement(element.id)}
+                            >
+                              <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
+                            </Button>
                           </div>
-                        ) : (
-                          <>
-                            <p className="text-sm text-muted-foreground">{element.value}</p>
-                            {element.attributes && element.attributes.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mt-1.5">
-                                {element.attributes.map((attrId) => {
-                                  const attrLabel = [...taglineAttributes, ...imageryAttributes].find(a => a.id === attrId)?.label
-                                  return attrLabel ? (
-                                    <span key={attrId} className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                                      {attrLabel}
-                                    </span>
-                                  ) : null
-                                })}
-                              </div>
-                            )}
-                          </>
                         )}
                       </div>
-
-                      {editingElement !== element.id && !isLocked && (
-                        <div className="flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-7 w-7 p-0 hover:bg-muted"
-                            onClick={() => handleEdit(element.id, element)}
-                          >
-                            <Pencil className="h-3 w-3 text-muted-foreground" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-7 w-7 p-0 hover:bg-destructive/10"
-                            onClick={() => handleDeleteElement(element.id)}
-                          >
-                            <Trash2 className="h-3 w-3 text-muted-foreground hover:text-destructive" />
-                          </Button>
-                        </div>
-                      )}
                     </div>
-                  </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
-        ))}
-
-        {/* Lock warning + CTA */}
-        {/* {!isLocked && (
-          <div className="flex flex-col gap-3 pt-2">
-            <div className="flex items-start gap-2.5 rounded-lg border border-border bg-muted/30 px-4 py-3">
-              <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-              <p className="text-xs leading-relaxed text-muted-foreground">
-                Analysis is generated using these elements. Once confirmed,
-                changes require regenerating the report.
-              </p>
-            </div>
-            <Button className="w-full gap-2" onClick={handleConfirm}>
-              <Check className="h-4 w-4" />
-              Confirm elements & generate analysis
-            </Button>
-          </div>
-        )} */}
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          ))}
 
 
+        </div>
       </div>
 
 
-    </div>
+      {/* Sticky bottom CTA */}
+      <div className="shrink-0 border-t border-border bg-muted/40 p-6">
+        <div
+          className="flex items-center justify-end gap-4"
+          role="group"
+          aria-label="Dialog actions"
+        >
+          {readOnly ? (
+            onNext ? (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={onNext}
+                className="h-9 gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+              >
+                View confirmed channel and purpose
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Button>
+            ) : null
+          ) : (
+            <Button
+              type="button"
+              className="h-9 gap-2 px-5"
+              onClick={onConfirm}
+            >
+              Looks correct
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          )}
+        </div>
+      </div>
 
 
-
-
-
+    </>
   )
 }

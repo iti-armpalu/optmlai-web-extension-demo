@@ -1,4 +1,5 @@
 "use client"
+
 import { LogOut, Settings, CreditCard, User } from "lucide-react"
 import { useState } from "react"
 
@@ -30,20 +31,20 @@ export function NavUser({
     avatar: string
   }
 }) {
-  const { isMobile, state } = useSidebar()
+  const { isMobile } = useSidebar()
 
   const { isLoggedIn, logout, login } = useAuth()
   const [showLoginDialog, setShowLoginDialog] = useState(false)
   const [showSignUpDialog, setShowSignUpDialog] = useState(false)
 
+  // Dev state (replace with real backend values later)
   const [tier, setTier] = useState<SubscriptionTier>("free")
-  const [credits, setCredits] = useState(0)
-  const [freeCredits, setFreeCredits] = useState(3)
+  const [credits, setCredits] = useState(0) // monthly remaining
+  const [freeCredits, setFreeCredits] = useState(3) // sign-up bonus remaining
+  const [topUpCredits, setTopUpCredits] = useState(0) // top-up remaining (deducted last)
   const [daysUntilRenewal, setDaysUntilRenewal] = useState(12)
 
-  const handleSignOut = () => {
-    logout()
-  }
+  const handleSignOut = () => logout()
 
   if (!isLoggedIn) {
     return (
@@ -54,6 +55,7 @@ export function NavUser({
               <Button onClick={() => setShowLoginDialog(true)} variant="outline" className="w-full">
                 Login
               </Button>
+
               <div className="space-y-1">
                 <Button onClick={() => setShowSignUpDialog(true)} className="w-full">
                   Sign Up
@@ -101,9 +103,9 @@ export function NavUser({
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-r-none flex-1"
+                className="flex-1 rounded-r-none data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               >
-                <Avatar className="size-8 rounded-lg shrink-0">
+                <Avatar className="size-8 shrink-0 rounded-lg">
                   <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
                   <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                     {user.name
@@ -113,17 +115,19 @@ export function NavUser({
                       .toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{user.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">{user.email}</span>
-                  </div>
+
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+                </div>
               </SidebarMenuButton>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent
               className="w-(--radix-dropdown-menu-trigger-width) min-w-[280px] rounded-lg"
               side={isMobile ? "bottom" : "right"}
               align="end"
-              sideOffset={4}
+              sideOffset={12}
             >
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-3 px-2 py-3">
@@ -137,8 +141,9 @@ export function NavUser({
                         .toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
+
                   <div className="grid flex-1 text-left leading-tight">
-                    <span className="truncate font-semibold text-sm">{user.name}</span>
+                    <span className="truncate text-sm font-semibold">{user.name}</span>
                     <span className="truncate text-xs text-muted-foreground">{user.email}</span>
                   </div>
                 </div>
@@ -150,6 +155,7 @@ export function NavUser({
                 <CreditDetails
                   credits={credits}
                   freeCredits={freeCredits}
+                  topUpCredits={topUpCredits}
                   tier={tier}
                   daysUntilRenewal={daysUntilRenewal}
                 />
@@ -165,6 +171,8 @@ export function NavUser({
                   onCreditsChange={setCredits}
                   freeCredits={freeCredits}
                   onFreeCreditsChange={setFreeCredits}
+                  topUpCredits={topUpCredits}
+                  onTopUpCreditsChange={setTopUpCredits}
                   daysUntilRenewal={daysUntilRenewal}
                   onDaysUntilRenewalChange={setDaysUntilRenewal}
                 />
@@ -179,12 +187,14 @@ export function NavUser({
                     <span className="text-sm">Account Settings</span>
                   </a>
                 </DropdownMenuItem>
+
                 <DropdownMenuItem asChild className="cursor-pointer rounded-md">
                   <a href="https://optml.ai/profile" target="_blank" rel="noopener noreferrer">
                     <User className="mr-2 size-4" />
                     <span className="text-sm">Profile Settings</span>
                   </a>
                 </DropdownMenuItem>
+
                 <DropdownMenuItem asChild className="cursor-pointer rounded-md">
                   <a href="https://optml.ai/billing" target="_blank" rel="noopener noreferrer">
                     <CreditCard className="mr-2 size-4" />
@@ -198,7 +208,7 @@ export function NavUser({
               <div className="px-1 pb-1">
                 <DropdownMenuItem
                   onClick={handleSignOut}
-                  className="cursor-pointer text-destructive focus:text-destructive rounded-md"
+                  className="cursor-pointer rounded-md text-destructive focus:text-destructive"
                 >
                   <LogOut className="mr-2 size-4" />
                   <span className="text-sm">Sign Out</span>
@@ -207,17 +217,15 @@ export function NavUser({
             </DropdownMenuContent>
           </DropdownMenu>
 
-   
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleSignOut}
-              className="size-10 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-l-none border-l border-sidebar-border"
-              aria-label="Sign out"
-            >
-              <LogOut className="size-4 text-muted-foreground" />
-            </Button>
-
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleSignOut}
+            className="size-10 rounded-l-none border-l border-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            aria-label="Sign out"
+          >
+            <LogOut className="size-4 text-muted-foreground" />
+          </Button>
         </div>
       </SidebarMenuItem>
     </SidebarMenu>

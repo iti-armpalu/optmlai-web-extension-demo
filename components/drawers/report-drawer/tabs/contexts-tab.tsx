@@ -28,7 +28,7 @@ export function ContextsTab() {
                             <Sparkle className="w-5 h-5" />
                             <div className="flex-1 space-y-1">
                                 <h3 className="text-sm font-semibold">Key Insight</h3>
-                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                <p className="text-sm text-foreground leading-relaxed">
                                     {dummyContextsTab.keyInsight.body}
                                 </p>
                             </div>

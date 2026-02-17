@@ -4,7 +4,7 @@ export const dummyHeatmapTab = {
   
     keyInsight: {
       body:
-        "Viewers notice the **headline and superhero imagery** first (immediate), followed by the **product benefits section** (early). Body text and CTA receive minimal attention during fast-scrolling or quick-glance moments.",
+        "Viewers notice the headline and superhero imagery first (immediate), followed by the product benefits section (early). Body text and CTA receive minimal attention during fast-scrolling or quick-glance moments.",
     },
   
     intensityScale: {
