@@ -4,13 +4,13 @@ import { useState } from "react"
 import {
     Dialog,
     DialogContent,
+    DialogDescription,
     DialogHeader,
     DialogTitle,
 
 } from "@/components/ui/dialog"
 
-import { Lock, ArrowRight, Check, ArrowLeft } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Lock } from "lucide-react"
 import { KeyElementsTab } from "./key-elements-tab"
 import { ChannelPurposeTab } from "./channel-purpose-tab"
 import StepIndicator from "./step-indicator"
@@ -33,9 +33,14 @@ export function AnalysisSetupDialog({ open, onOpenChange, onConfirm, isLocked = 
             <DialogContent className="flex h-[90vh] w-[95vw] max-w-[95vw] sm:max-w-[95vw] flex-col gap-0 overflow-hidden p-0">
                 <DialogHeader>
                     <div className="p-6 border-b border-border flex items-center justify-between">
-                        <DialogTitle>
-                            {isLocked ? "Analysis configured" : "Refine your analysis"}
-                        </DialogTitle>
+                        <div>
+                            <DialogTitle>
+                                {isLocked ? "Analysis generated" : "Refine your analysis"}
+                            </DialogTitle>
+                            <DialogDescription>
+                                {isLocked ? "The generated report is based on the confirmed inputs below." : "The generated report will be based on the confirmed inputs below."}
+                            </DialogDescription>
+                        </div>
                         <div className="flex items-center gap-3">
                             <StepIndicator currentStep={step} totalSteps={2} isComplete={isLocked} onStepClick={setStep} />
                         </div>

@@ -81,7 +81,7 @@ export function LockedReportOverlay({
                     onClick={onOpenDialog}
                     className="bg-primary text-primary-foreground font-semibold py-3 px-8 text-sm hover:bg-primary/90 transition-all glow-primary flex items-center gap-2"
                 >
-                    Confirm details & run analysis
+                    Confirm details & generate full report
                 </Button>
 
 

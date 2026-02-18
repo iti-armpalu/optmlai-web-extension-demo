@@ -144,7 +144,7 @@ export function ReportHeader({
         <Separator />
 
         {/* Row 2 — Setup / Status row */}
-        <div className="flex items-center flex-wrap gap-x-4 gap-y-2">
+        <div className="flex items-center gap-x-4 gap-y-2">
           <div className="flex items-center gap-3">
 
             <Badge
@@ -152,7 +152,7 @@ export function ReportHeader({
               className={cn(
                 "gap-1 border-none px-3 py-1",
                 analysisSetupConfirmed
-                  ? "text-green-600 bg-green/500/10"
+                  ? "text-green-600 bg-green-500/10"
                   : "text-amber-600 bg-amber-500/10"
               )}
             >
@@ -191,7 +191,7 @@ export function ReportHeader({
                   "gap-2 transition-colors text-xs bg-transparent text-muted-forground")}
               >
                 <AlertCircle className="h-4 w-4 text-amber-600" />
-                Unlock analysis
+                Confirm details & generate full report
               </Button>
             )}
           </div>

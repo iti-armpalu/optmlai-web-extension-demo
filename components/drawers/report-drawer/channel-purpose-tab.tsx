@@ -83,7 +83,7 @@ export function ChannelPurposeTab({ onOpenChange, onConfirm, onBack, readOnly = 
 
   return (
     <>
-      <div className="flex flex-col gap-8 p-6 flex-1 overflow-hidden">
+      <div className="flex flex-col h-full gap-8 p-6 overflow-y-auto">
         {/* Channel grid (show all + one selected) */}
         <div className="flex flex-col gap-3">
           <Label className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Channel</Label>
@@ -142,7 +142,6 @@ export function ChannelPurposeTab({ onOpenChange, onConfirm, onBack, readOnly = 
         {readOnly ? (
           <div className="flex items-center justify-start">
             <Button
-              type="button"
               variant="ghost"
               onClick={onBack}
               className="h-9 gap-1.5 text-muted-foreground hover:text-foreground"
@@ -152,13 +151,13 @@ export function ChannelPurposeTab({ onOpenChange, onConfirm, onBack, readOnly = 
             </Button>
           </div>
         ) : (
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <Button type="button" variant="secondary" onClick={onBack} className="h-9 gap-1.5">
               <ArrowLeft className="h-3.5 w-3.5" />
               Back
             </Button>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
               <div className="flex items-start gap-2.5 rounded-lg border border-border bg-muted/30 px-4 py-2">
                 <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                 <p className="text-xs leading-relaxed text-muted-foreground">
@@ -167,21 +166,28 @@ export function ChannelPurposeTab({ onOpenChange, onConfirm, onBack, readOnly = 
                 </p>
               </div>
 
-              <Button
-                type="button"
-                className="h-9 gap-2 px-5"
-                onClick={() => {
-                  onConfirm()
-                  // onOpenChange(false)
-                }}
-                disabled={!canRun}
-              >
-                Run full analysis
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Button>
+
+              <div className="flex flex-col items-center">
+                <Button
+                  className="h-9 gap-2 px-5"
+                  onClick={() => {
+                    onConfirm()
+                    onOpenChange(false)
+                  }}
+                  disabled={!canRun}
+                >
+                  Generate full report
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Button>
+                <span className="text-xs text-muted-foreground mt-1">
+                  Estimated time: ~4 minutes
+                </span>
+              </div>
             </div>
           </div>
         )}
+
+
       </div>
 
     </>

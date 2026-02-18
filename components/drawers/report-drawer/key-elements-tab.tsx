@@ -546,7 +546,7 @@ export function KeyElementsTab({
       {/* Sticky bottom CTA */}
       <div className="shrink-0 border-t border-border bg-muted/40 p-6">
         <div
-          className="flex items-center justify-end gap-4"
+          className="flex items-start justify-end gap-4"
           role="group"
           aria-label="Dialog actions"
         >
@@ -568,7 +568,7 @@ export function KeyElementsTab({
               className="h-9 gap-2 px-5"
               onClick={onConfirm}
             >
-              Looks correct
+              Confirm key elements
               <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           )}
