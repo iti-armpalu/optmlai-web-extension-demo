@@ -21,6 +21,7 @@ import { LoginDialog } from "@/components/auth/login-dialog"
 import CreditDetails, { type SubscriptionTier } from "./credit-details"
 import { DevControls } from "./dev-controls"
 import { RegisterDialog } from "../auth/register-dialog"
+import { SettingsModal } from "./settings-modal"
 
 export function NavUser({
   user,
@@ -32,6 +33,8 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const { isLoggedIn, logout, login } = useAuth()
   const [showLoginDialog, setShowLoginDialog] = useState(false)
@@ -96,44 +99,19 @@ export function NavUser({
   }
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <div className="flex items-center gap-0.5">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SidebarMenuButton
-                size="lg"
-                className="flex-1 rounded-r-none data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-              >
-                <Avatar className="size-8 shrink-0 rounded-lg">
-                  <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
-                  <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    {user.name
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">{user.email}</span>
-                </div>
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-[280px] rounded-lg"
-              side={isMobile ? "bottom" : "right"}
-              align="end"
-              sideOffset={12}
-            >
-              <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-3 px-2 py-3">
-                  <Avatar className="size-10 rounded-lg">
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <div className="flex items-center gap-0.5">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="flex-1 rounded-r-none data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="size-8 shrink-0 rounded-lg">
                     <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
-                    <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
+                    <AvatarFallback className="rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                       {user.name
                         .split(" ")
                         .map((n) => n[0])
@@ -142,92 +120,121 @@ export function NavUser({
                     </AvatarFallback>
                   </Avatar>
 
-                  <div className="grid flex-1 text-left leading-tight">
-                    <span className="truncate text-sm font-semibold">{user.name}</span>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">{user.name}</span>
                     <span className="truncate text-xs text-muted-foreground">{user.email}</span>
                   </div>
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                className="w-(--radix-dropdown-menu-trigger-width) min-w-[280px] rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align="end"
+                sideOffset={12}
+              >
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-3 px-2 py-3">
+                    <Avatar className="size-10 rounded-lg">
+                      <AvatarImage src={user.avatar || "/placeholder.svg"} alt={user.name} />
+                      <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
+                        {user.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="grid flex-1 text-left leading-tight">
+                      <span className="truncate text-sm font-semibold">{user.name}</span>
+                      <span className="truncate text-xs text-muted-foreground">{user.email}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+
+                <DropdownMenuSeparator />
+
+                <div className="p-3">
+                  <CreditDetails
+                    credits={credits}
+                    freeCredits={freeCredits}
+                    topUpCredits={topUpCredits}
+                    tier={tier}
+                    daysUntilRenewal={daysUntilRenewal}
+                  />
                 </div>
-              </DropdownMenuLabel>
 
-              <DropdownMenuSeparator />
+                <DropdownMenuSeparator />
 
-              <div className="p-3">
-                <CreditDetails
-                  credits={credits}
-                  freeCredits={freeCredits}
-                  topUpCredits={topUpCredits}
-                  tier={tier}
-                  daysUntilRenewal={daysUntilRenewal}
-                />
-              </div>
+                <div className="px-2 pb-2">
+                  <DevControls
+                    tier={tier}
+                    onTierChange={setTier}
+                    credits={credits}
+                    onCreditsChange={setCredits}
+                    freeCredits={freeCredits}
+                    onFreeCreditsChange={setFreeCredits}
+                    topUpCredits={topUpCredits}
+                    onTopUpCreditsChange={setTopUpCredits}
+                    daysUntilRenewal={daysUntilRenewal}
+                    onDaysUntilRenewalChange={setDaysUntilRenewal}
+                  />
+                </div>
 
-              <DropdownMenuSeparator />
+                <DropdownMenuSeparator />
 
-              <div className="px-2 pb-2">
-                <DevControls
-                  tier={tier}
-                  onTierChange={setTier}
-                  credits={credits}
-                  onCreditsChange={setCredits}
-                  freeCredits={freeCredits}
-                  onFreeCreditsChange={setFreeCredits}
-                  topUpCredits={topUpCredits}
-                  onTopUpCreditsChange={setTopUpCredits}
-                  daysUntilRenewal={daysUntilRenewal}
-                  onDaysUntilRenewalChange={setDaysUntilRenewal}
-                />
-              </div>
+                <DropdownMenuGroup className="px-1">
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-md">
+                    <button
+                      onClick={() => setSettingsOpen(true)}
+                    >
+                      <Settings className="mr-2 size-4" />
+                      <span className="text-sm">Settings</span>
+                    </button>
+                  </DropdownMenuItem>
 
-              <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild className="cursor-pointer rounded-md">
+                    <button>
+                      <User className="mr-2 size-4" />
+                      <span className="text-sm">Billing & Usage</span>
+                    </button>
+                  </DropdownMenuItem>
 
-              <DropdownMenuGroup className="px-1">
-                <DropdownMenuItem asChild className="cursor-pointer rounded-md">
-                  <a href="https://optml.ai/account" target="_blank" rel="noopener noreferrer">
-                    <Settings className="mr-2 size-4" />
-                    <span className="text-sm">Account Settings</span>
-                  </a>
-                </DropdownMenuItem>
+                </DropdownMenuGroup>
 
-                <DropdownMenuItem asChild className="cursor-pointer rounded-md">
-                  <a href="https://optml.ai/profile" target="_blank" rel="noopener noreferrer">
-                    <User className="mr-2 size-4" />
-                    <span className="text-sm">Profile Settings</span>
-                  </a>
-                </DropdownMenuItem>
+                <DropdownMenuSeparator />
 
-                <DropdownMenuItem asChild className="cursor-pointer rounded-md">
-                  <a href="https://optml.ai/billing" target="_blank" rel="noopener noreferrer">
-                    <CreditCard className="mr-2 size-4" />
-                    <span className="text-sm">Billing & Usage</span>
-                  </a>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
+                <div className="px-1 pb-1">
+                  <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="cursor-pointer rounded-md text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="mr-2 size-4" />
+                    <span className="text-sm">Sign Out</span>
+                  </DropdownMenuItem>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-              <DropdownMenuSeparator />
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleSignOut}
+              className="size-10 rounded-l-none border-l border-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              aria-label="Sign out"
+            >
+              <LogOut className="size-4 text-muted-foreground" />
+            </Button>
+          </div>
+        </SidebarMenuItem>
+      </SidebarMenu>
 
-              <div className="px-1 pb-1">
-                <DropdownMenuItem
-                  onClick={handleSignOut}
-                  className="cursor-pointer rounded-md text-destructive focus:text-destructive"
-                >
-                  <LogOut className="mr-2 size-4" />
-                  <span className="text-sm">Sign Out</span>
-                </DropdownMenuItem>
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleSignOut}
-            className="size-10 rounded-l-none border-l border-sidebar-border hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            aria-label="Sign out"
-          >
-            <LogOut className="size-4 text-muted-foreground" />
-          </Button>
-        </div>
-      </SidebarMenuItem>
-    </SidebarMenu>
+      <SettingsModal
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        user={user}
+      />
+    </>
   )
 }

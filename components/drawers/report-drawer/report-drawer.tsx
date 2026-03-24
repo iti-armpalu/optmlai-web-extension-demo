@@ -7,7 +7,6 @@ import {
     ResizablePanel,
     ResizableHandle,
 } from "@/components/ui/resizable"
-import { ReportChat } from "./report-chat"
 import {
     Tabs,
     TabsList,
@@ -21,6 +20,7 @@ import { ScoreDriversTab } from "./tabs/score-drivers-tab"
 import { ResizableSheet } from "../resizable-sheet"
 import { ReportHeader } from "./report-header"
 import { AnalysisSetupDialog } from "./analysis-setup-dialog"
+import { ChatPanel } from "./chat/chat-panel"
 
 
 type ReportDrawerProps = {
@@ -228,7 +228,7 @@ export function ReportDrawer({
 
                         {/* CHAT PANEL */}
                         <ResizablePanel defaultSize={30} minSize={25} className="min-w-0">
-                            <ReportChat report={report} />
+                            <ChatPanel analysisSetupConfirmed={analysisSetupConfirmed} />
                         </ResizablePanel>
                     </ResizablePanelGroup>
                 )}
