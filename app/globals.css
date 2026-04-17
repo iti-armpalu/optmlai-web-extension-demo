@@ -41,6 +41,34 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* Signal colors */
+  --color-signal-green: var(--signal-green);
+  --color-signal-green-bg: var(--signal-green-bg);
+  --color-signal-green-border: var(--signal-green-border);
+  --color-signal-green-text: var(--signal-green-text);
+
+  --color-signal-amber: var(--signal-amber);
+  --color-signal-amber-bg: var(--signal-amber-bg);
+  --color-signal-amber-border: var(--signal-amber-border);
+  --color-signal-amber-text: var(--signal-amber-text);
+
+  --color-signal-red: var(--signal-red);
+  --color-signal-red-bg: var(--signal-red-bg);
+  --color-signal-red-border: var(--signal-red-border);
+  --color-signal-red-text: var(--signal-red-text);
+
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-surface-recommendation: var(--surface-recommendation);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-quaternary: var(--text-quaternary);
+
+  --color-divider: var(--divider);
+  --color-heatmap-overlay-bg: var(--heatmap-overlay-bg);
 }
 
 :root {
@@ -76,6 +104,38 @@
   --sidebar-accent-foreground: hsl(240 5.9% 10%);
   --sidebar-border: hsl(220 13% 91%);
   --sidebar-ring: hsl(217.2 91.2% 59.8%);
+
+
+  /* Signal colors — deployment states */
+  --signal-green: 152 60% 40%;
+  --signal-green-bg: 152 50% 95%;
+  --signal-green-border: 152 45% 78%;
+  --signal-green-text: 152 55% 28%;
+
+  --signal-amber: 38 92% 50%;
+  --signal-amber-bg: 38 80% 95%;
+  --signal-amber-border: 38 70% 75%;
+  --signal-amber-text: 30 80% 30%;
+
+  --signal-red: 0 72% 51%;
+  --signal-red-bg: 0 60% 96%;
+  --signal-red-border: 0 50% 80%;
+  --signal-red-text: 0 65% 35%;
+
+  /* Surface tokens */
+  --surface-elevated: 0 0% 100%;
+  --surface-sunken: 220 16% 96%;
+  --surface-recommendation: 220 14% 96%;
+
+  /* Text levels */
+  --text-primary: 220 20% 12%;
+  --text-secondary: 220 12% 40%;
+  --text-tertiary: 220 8% 56%;
+  --text-quaternary: 220 6% 68%;
+
+  /* Misc */
+  --heatmap-overlay-bg: 220 20% 12%;
+  --divider: 220 14% 91%;
 }
 
 .dark {
@@ -116,8 +176,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .section-label {
+    @apply text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60;
+  }
+
+  .hint-text {
+    @apply text-[11px] italic text-muted-foreground/50;
   }
 }
 
@@ -134,12 +205,10 @@
   left: -150%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(var(--foreground), 0) 0%,
-    rgba(var(--foreground), 0.06) 50%,
-    rgba(var(--foreground), 0) 100%
-  );
+  background: linear-gradient(120deg,
+      rgba(var(--foreground), 0) 0%,
+      rgba(var(--foreground), 0.06) 50%,
+      rgba(var(--foreground), 0) 100%);
   animation: shimmer 1.6s infinite;
 }
 
@@ -147,9 +216,11 @@
   0% {
     left: -150%;
   }
+
   50% {
     left: 100%;
   }
+
   100% {
     left: 150%;
   }
@@ -162,9 +233,11 @@
     opacity: 0;
     transform: scale(0.85);
   }
+
   50% {
     transform: scale(1.05);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -174,5 +247,3 @@
 .animate-confirm-in {
   animation: confirm-in 200ms ease-out forwards;
 }
-
-

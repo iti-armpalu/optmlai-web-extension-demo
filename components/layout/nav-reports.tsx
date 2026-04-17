@@ -9,10 +9,11 @@ import {
 } from "@/components/ui/sidebar"
 import { useReportStore } from "@/store/report-store"
 import { useUIStore } from "@/store/ui-store"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/collapsible"
+
 import { ChevronRight, Clock, FolderOpen, Sparkles } from "lucide-react"
 import { useMemo } from "react"
 import { formatDistanceToNow } from "date-fns"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "../ui/collapsible"
 
 
 export function NavReports() {

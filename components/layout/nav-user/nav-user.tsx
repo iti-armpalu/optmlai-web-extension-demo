@@ -20,8 +20,9 @@ import { LoginDialog } from "@/components/auth/login-dialog"
 
 import CreditDetails, { type SubscriptionTier } from "./credit-details"
 import { DevControls } from "./dev-controls"
-import { RegisterDialog } from "../auth/register-dialog"
+
 import { SettingsModal } from "./settings-modal"
+import { RegisterDialog } from "@/components/auth/register-dialog"
 
 export function NavUser({
   user,

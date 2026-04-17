@@ -7,20 +7,22 @@ import {
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavReports } from "@/components/nav-reports"
-import { NavUser } from "@/components/nav-user/nav-user"
+
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail,
 } from "@/components/ui/sidebar"
 
-import { NewCaptureButton } from "./capture-tool/new-capture-button"
-import { CompanyLogo } from "./company-logo"
+
 import { AuthProvider } from "@/contexts/auth-context"
-import { RegisterDialog } from "./auth/register-dialog"
+import { NewCaptureButton } from "../capture-tool/new-capture-button"
+import { NavReports } from "./nav-reports"
+import { NavUser } from "./nav-user/nav-user"
+import { RegisterDialog } from "../auth/register-dialog"
+import { CompanyLogo } from "./company-logo"
+
 
 // ----------------------------
 // SAMPLE NAV DATA
